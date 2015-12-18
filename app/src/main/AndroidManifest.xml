@@ -9,9 +9,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme" >
+        <activity android:name=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".NavActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -20,5 +25,4 @@
             android:label="@string/title_activity_root"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-
 </manifest>
