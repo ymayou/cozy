@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 
 public class NavActivity extends AppCompatActivity
@@ -33,6 +34,7 @@ public class NavActivity extends AppCompatActivity
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -40,6 +42,16 @@ public class NavActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Menu menu = navigationView.getMenu();
+        //menu.clear();
+        SubMenu sub = menu.addSubMenu(Menu.NONE, 0, 0, "Menu 1");
+        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        sub.add(Menu.NONE, 0, 1, "title 1");
+        sub.add(Menu.NONE, 0, 2, "title 2");
+        SubMenu subsub = menu.addSubMenu(Menu.NONE, 1, 0, "Menu 2");
+        subsub.add(Menu.NONE, 1, 1, "title 1");
+        subsub.add(Menu.NONE, 1, 2, "title 2");
     }
 
     @Override
