@@ -9,4 +9,15 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior" tools:showIn="@layout/app_bar_nav"
     tools:context="irc.cpe.cozy.NavActivity">
 
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/noteGrid"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:columnWidth="@dimen/noteImage" />
+
 </RelativeLayout>

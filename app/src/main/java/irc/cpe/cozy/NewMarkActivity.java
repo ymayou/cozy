@@ -1,11 +1,13 @@
 package irc.cpe.cozy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 public class NewMarkActivity extends AppCompatActivity {
 
@@ -24,6 +26,15 @@ public class NewMarkActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Intent current = getIntent();
+        String note = current.getStringExtra("NOTE");
+        if (!note.equals(""))
+        {
+            TextView content = (TextView) findViewById(R.id.textView2);
+            content.setText(note);
+        }
+
     }
 
 }

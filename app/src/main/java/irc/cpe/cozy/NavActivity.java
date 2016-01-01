@@ -13,6 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import irc.cpe.cozy.Adapter.NotePreview;
+import irc.cpe.cozy.Model.SimpleNotePreview;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -50,8 +59,30 @@ public class NavActivity extends AppCompatActivity
         sub.add(Menu.NONE, 0, 1, "title 1");
         sub.add(Menu.NONE, 0, 2, "title 2");
         SubMenu subsub = menu.addSubMenu(Menu.NONE, 1, 0, "Menu 2");
+        subsub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         subsub.add(Menu.NONE, 1, 1, "title 1");
         subsub.add(Menu.NONE, 1, 2, "title 2");
+
+
+        List<SimpleNotePreview> notes = new ArrayList<>();
+        notes.add(new SimpleNotePreview("note"));
+        notes.add(new SimpleNotePreview("note"));
+        notes.add(new SimpleNotePreview("note"));
+        notes.add(new SimpleNotePreview("note"));
+
+        NotePreview adapter = new NotePreview(this, R.layout.simple_note_preview, notes);
+        final GridView grid = (GridView) findViewById(R.id.noteGrid);
+        grid.setAdapter(adapter);
+
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent editNote = new Intent(view.getContext(), NewMarkActivity.class);
+                editNote.putExtra("NOTE", ((SimpleNotePreview)grid.getItemAtPosition(position)).getName());
+                startActivity(editNote);
+            }
+        });
     }
 
     @Override
