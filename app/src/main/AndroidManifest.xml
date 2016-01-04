@@ -11,7 +11,7 @@ package="irc.cpe.cozy">
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name="irc.cpe.cozy.NewMarkActivity" android:label="@string/title_activity_new_mark"
-        android:theme="@style/AppTheme.NoActionBar"></activity>
+    <activity android:name=".NoteActivity" android:label="@string/title_activity_new_mark"
+        android:theme="@style/AppTheme.NoActionBar"/>
 </application>
 </manifest>

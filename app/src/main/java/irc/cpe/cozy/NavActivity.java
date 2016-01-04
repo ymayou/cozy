@@ -40,7 +40,7 @@ public class NavActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavActivity.this.startActivity(new Intent(NavActivity.this, NewMarkActivity.class));
+                NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
             }
         });
 
@@ -111,7 +111,7 @@ public class NavActivity extends AppCompatActivity
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editNote = new Intent(view.getContext(), NewMarkActivity.class);
+                Intent editNote = new Intent(view.getContext(), NoteActivity.class);
                 editNote.putExtra("NOTE", ((Explorer)grid.getItemAtPosition(position)).getName());
                 startActivity(editNote);
             }

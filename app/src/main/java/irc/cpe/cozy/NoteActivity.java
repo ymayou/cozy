@@ -3,18 +3,16 @@ package irc.cpe.cozy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
-public class NewMarkActivity extends AppCompatActivity {
+public class NoteActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_mark);
+        setContentView(R.layout.activity_note);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -22,11 +20,10 @@ public class NewMarkActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                NoteActivity.this.startActivity(new Intent(NoteActivity.this, NavActivity.class));
             }
         });
-
+/*
         Intent current = getIntent();
         String note = current.getStringExtra("NOTE");
         if (note != null && !note.equals(""))
@@ -34,7 +31,7 @@ public class NewMarkActivity extends AppCompatActivity {
             TextView content = (TextView) findViewById(R.id.textView2);
             content.setText(note);
         }
-
+*/
     }
 
 }
