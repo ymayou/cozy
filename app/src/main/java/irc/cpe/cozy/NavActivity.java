@@ -1,11 +1,13 @@
 package irc.cpe.cozy;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,7 +19,9 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +30,12 @@ import irc.cpe.cozy.Contract.CozyNoteHelper;
 import irc.cpe.cozy.Contract.FolderContract;
 import irc.cpe.cozy.Contract.NoteContract;
 import irc.cpe.cozy.Model.Explorer;
+import irc.cpe.cozy.Model.Folder;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FolderFragment.OnListFragmentInteractionListener{
+
+    List<Folder> foldersList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +69,10 @@ public class NavActivity extends AppCompatActivity
         CozyNoteHelper helper = new CozyNoteHelper(this.getApplicationContext());
         SQLiteDatabase db = helper.getReadableDatabase();
 
-        /*Folder f = new Folder("folder 1");
+        Folder f = new Folder("folder 1");
         ContentValues values = new ContentValues();
         values.put(FolderContract.FolderDB.COLUMN_NAME, f.getName());
-        db.insert(FolderContract.FolderDB.TABLE_NAME, null, values);*/
+        db.insert(FolderContract.FolderDB.TABLE_NAME, null, values);
 
         String[] columns = {
                 FolderContract.FolderDB.COLUMN_ID,
@@ -84,17 +91,15 @@ public class NavActivity extends AppCompatActivity
                 sortOrder // order by
         );
         folders.moveToFirst();
-        int tmp = 1;
         while (!folders.isAfterLast())
         {
-            sub.add(Menu.NONE, 0, tmp, folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME)));
-            tmp++;
+            sub.add(Menu.NONE, Integer.parseInt(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_ID))), Integer.parseInt(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_ID))), folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME)));
+            foldersList.add(new Folder(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME))));
             folders.moveToNext();
         }
         folders.close();
-
-
-
+        // add Folder
+        sub.add(Menu.NONE, 0, menu.size(), "Ajouter un répertoire");
 
         // explorerList.add();
         // explorerList.add(new Explorer(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME))));
@@ -103,12 +108,11 @@ public class NavActivity extends AppCompatActivity
         notes.add(new ExplorerAdapter("note"));*/
 
         List<Explorer> explorerList = new ArrayList<>();
-        //List<Note> noteList = new ArrayList<>();
         String [] cols = {
             NoteContract.NoteDB.COLUMN_ID,
-                NoteContract.NoteDB.COLUMN_NAME,
-                NoteContract.NoteDB.COLUMN_FOLDER,
-                NoteContract.NoteDB.COLUMN_CONTENT
+            NoteContract.NoteDB.COLUMN_NAME,
+            NoteContract.NoteDB.COLUMN_FOLDER,
+            NoteContract.NoteDB.COLUMN_CONTENT
         };
         Cursor notes = db.query(
                 NoteContract.NoteDB.TABLE_NAME, // table name
@@ -126,7 +130,8 @@ public class NavActivity extends AppCompatActivity
             notes.moveToNext();
         }
         notes.close();
-        ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
+
+        /*ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
@@ -138,7 +143,7 @@ public class NavActivity extends AppCompatActivity
                 editNote.putExtra("NOTE", ((Explorer)grid.getItemAtPosition(position)).getName());
                 startActivity(editNote);
             }
-        });
+        });*/
 
     }
 
@@ -179,7 +184,7 @@ public class NavActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        /*Toast.makeText(this.getApplicationContext(), id + "", Toast.LENGTH_LONG).show();
         if (id == R.id.nav_camara) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
@@ -192,10 +197,35 @@ public class NavActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
-        }
+        }*/
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        //return true;
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        if (id == menu.size() - 1)
+        {
+            //Toast.makeText(this.getApplicationContext(), "ajouter", Toast.LENGTH_LONG).show();
+            //startActivity(new Intent(this, NoteActivity.class));
+            FolderFragment fragment = new FolderFragment();
+            Bundle args = new Bundle();
+            ArrayList<Folder> arrFolders = new ArrayList<>();
+            arrFolders.addAll(foldersList);
+            args.putSerializable(FolderFragment.FOLDERS, arrFolders);
+            fragment.setArguments(args);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.nav_frame, fragment);
+            ft.commit();
+            getSupportActionBar().setTitle("Add folder");
+        }
         return true;
+    }
+
+    @Override
+    public void onListFragmentInteraction(Folder item) {
+        Toast.makeText(this.getApplicationContext(), item.getName(), Toast.LENGTH_SHORT).show();
     }
 }
