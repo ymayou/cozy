@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import irc.cpe.cozy.Rest.WebserviceActivity;
+
 public class NoteActivity extends AppCompatActivity {
 
     @Override
@@ -32,6 +34,9 @@ public class NoteActivity extends AppCompatActivity {
             content.setText(note);
         }
 */
+
+        Intent newIntent = new Intent(getApplicationContext(), WebserviceActivity.class);
+        startActivity(newIntent);
     }
 
 }
