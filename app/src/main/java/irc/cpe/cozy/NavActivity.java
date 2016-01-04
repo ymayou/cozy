@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class NavActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavActivity.this.startActivity(new Intent(NavActivity.this, PersonalActivity.class));
+                NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
             }
         });
 
@@ -128,7 +127,6 @@ public class NavActivity extends AppCompatActivity
         }
         notes.close();
         ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
-        //ArrayAdapter<Note> adap = new ArrayAdapter<>(this, R.layout.explorer, noteList);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
@@ -136,7 +134,7 @@ public class NavActivity extends AppCompatActivity
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editNote = new Intent(view.getContext(), NewMarkActivity.class);
+                Intent editNote = new Intent(view.getContext(), NoteActivity.class);
                 editNote.putExtra("NOTE", ((Explorer)grid.getItemAtPosition(position)).getName());
                 startActivity(editNote);
             }
