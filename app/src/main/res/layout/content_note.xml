@@ -15,7 +15,7 @@
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/titleText"
+        android:id="@+id/noteTitle"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:hint="Titre"/>
@@ -25,10 +25,10 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:id="@+id/noteText"
-        android:layout_below="@+id/titleText"
+        android:id="@+id/noteContent"
+        android:layout_below="@+id/noteTitle"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/titleText"
+        android:layout_alignEnd="@+id/noteTitle"
         android:layout_above="@+id/noteButton"
         android:hint="Note" />
 
