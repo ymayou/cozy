@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.List;
 import irc.cpe.cozy.Adapter.ExplorerAdapter;
 import irc.cpe.cozy.Contract.CozyNoteHelper;
 import irc.cpe.cozy.Contract.FolderContract;
+import irc.cpe.cozy.Contract.NoteContract;
 import irc.cpe.cozy.Model.Explorer;
 
 public class NavActivity extends AppCompatActivity
@@ -40,7 +42,7 @@ public class NavActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavActivity.this.startActivity(new Intent(NavActivity.this, NewMarkActivity.class));
+                NavActivity.this.startActivity(new Intent(NavActivity.this, PersonalActivity.class));
             }
         });
 
@@ -65,8 +67,6 @@ public class NavActivity extends AppCompatActivity
         ContentValues values = new ContentValues();
         values.put(FolderContract.FolderDB.COLUMN_NAME, f.getName());
         db.insert(FolderContract.FolderDB.TABLE_NAME, null, values);*/
-
-        List<Explorer> explorerList = new ArrayList<>();
 
         String[] columns = {
                 FolderContract.FolderDB.COLUMN_ID,
@@ -103,7 +103,32 @@ public class NavActivity extends AppCompatActivity
         notes.add(new ExplorerAdapter("note"));
         notes.add(new ExplorerAdapter("note"));*/
 
+        List<Explorer> explorerList = new ArrayList<>();
+        //List<Note> noteList = new ArrayList<>();
+        String [] cols = {
+            NoteContract.NoteDB.COLUMN_ID,
+                NoteContract.NoteDB.COLUMN_NAME,
+                NoteContract.NoteDB.COLUMN_FOLDER,
+                NoteContract.NoteDB.COLUMN_CONTENT
+        };
+        Cursor notes = db.query(
+                NoteContract.NoteDB.TABLE_NAME, // table name
+                cols, // columns
+                null, // columns for the where
+                null, // where
+                null, // group rows
+                null, // filter by group rows
+                null // order by
+        );
+        notes.moveToFirst();
+        while (!notes.isAfterLast())
+        {
+            explorerList.add(new Explorer(Integer.parseInt(notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_ID))), notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_NAME))));
+            notes.moveToNext();
+        }
+        notes.close();
         ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
+        //ArrayAdapter<Note> adap = new ArrayAdapter<>(this, R.layout.explorer, noteList);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
