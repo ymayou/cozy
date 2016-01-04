@@ -6,20 +6,17 @@ package irc.cpe.cozy.Model;
 public class Folder {
     private int id;
     private String name;
-    private int parentFolder;
 
     public Folder() {
     }
 
-    public Folder(String name, int parentFolder) {
+    public Folder(String name) {
         this.name = name;
-        this.parentFolder = parentFolder;
     }
 
-    public Folder(int id, String name, int parentFolder) {
+    public Folder(int id, String name) {
         this.id = id;
         this.name = name;
-        this.parentFolder = parentFolder;
     }
 
     public int getId() {
@@ -36,13 +33,5 @@ public class Folder {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getParentFolder() {
-        return parentFolder;
-    }
-
-    public void setParentFolder(int parentFolder) {
-        this.parentFolder = parentFolder;
     }
 }

@@ -6,7 +6,7 @@ android:layout_height="match_parent">
     <ImageView
         android:layout_width="@dimen/noteImage"
         android:layout_height="@dimen/noteImage"
-        android:id="@+id/noteImage"
+        android:id="@+id/imageExplorer"
         android:foregroundGravity="top|center"
         android:src="@mipmap/ic_launcher"
         android:layout_gravity="center" />
@@ -14,7 +14,7 @@ android:layout_height="match_parent">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/noteTitle"
+        android:id="@+id/nameExplorer"
         android:gravity="center"
         android:maxWidth="@dimen/noteImage"
         android:layout_gravity="center_horizontal" />

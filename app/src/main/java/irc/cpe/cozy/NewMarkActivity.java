@@ -29,7 +29,7 @@ public class NewMarkActivity extends AppCompatActivity {
 
         Intent current = getIntent();
         String note = current.getStringExtra("NOTE");
-        if (!note.equals(""))
+        if (note != null && !note.equals(""))
         {
             TextView content = (TextView) findViewById(R.id.textView2);
             content.setText(note);

@@ -13,20 +13,18 @@ public class FolderContract {
 
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_PARENTFOLDER = "parentFolder";
     }
 
-    private static final String SQL_CREATE_TABLE_DEPENSE =
+    private static final String SQL_CREATE_TABLE_FOLDER =
         "CREATE TABLE " + FolderDB.TABLE_NAME + " (" +
             FolderDB.COLUMN_ID + " INTEGER PRIMARY KEY," +
-            FolderDB.COLUMN_NAME + " TEXT NOT NULL, " +
-            FolderDB.COLUMN_PARENTFOLDER + " TEXT " +
+            FolderDB.COLUMN_NAME + " TEXT NOT NULL " +
     " )";
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + FolderDB.TABLE_NAME;
 
     public static void onCreate(SQLiteDatabase database) {
-        database.execSQL(SQL_CREATE_TABLE_DEPENSE);
+        database.execSQL(SQL_CREATE_TABLE_FOLDER);
     }
 
     public static void onUpgrade(SQLiteDatabase database) {

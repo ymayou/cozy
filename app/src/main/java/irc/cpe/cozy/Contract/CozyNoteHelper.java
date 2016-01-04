@@ -18,11 +18,17 @@ public class CozyNoteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        FolderContract.onCreate(db);
+        NoteContract.onCreate(db);
+        TaskNoteContract.onCreate(db);
+        NoteTaskNoteContract.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        FolderContract.onUpgrade(db);
+        NoteContract.onUpgrade(db);
+        TaskNoteContract.onUpgrade(db);
+        NoteTaskNoteContract.onUpgrade(db);
     }
 }

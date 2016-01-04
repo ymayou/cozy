@@ -1,6 +1,8 @@
 package irc.cpe.cozy;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,13 +17,14 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import irc.cpe.cozy.Adapter.NotePreview;
-import irc.cpe.cozy.Model.SimpleNotePreview;
+import irc.cpe.cozy.Adapter.ExplorerAdapter;
+import irc.cpe.cozy.Contract.CozyNoteHelper;
+import irc.cpe.cozy.Contract.FolderContract;
+import irc.cpe.cozy.Model.Explorer;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,7 +41,6 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 NavActivity.this.startActivity(new Intent(NavActivity.this, NewMarkActivity.class));
-                finish();
             }
         });
 
@@ -53,24 +55,55 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
-        //menu.clear();
-        SubMenu sub = menu.addSubMenu(Menu.NONE, 0, 0, "Menu 1");
+        menu.clear();
+        SubMenu sub = menu.addSubMenu(Menu.NONE, 0, 0, "Folders");
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        sub.add(Menu.NONE, 0, 1, "title 1");
-        sub.add(Menu.NONE, 0, 2, "title 2");
-        SubMenu subsub = menu.addSubMenu(Menu.NONE, 1, 0, "Menu 2");
-        subsub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        subsub.add(Menu.NONE, 1, 1, "title 1");
-        subsub.add(Menu.NONE, 1, 2, "title 2");
+        CozyNoteHelper helper = new CozyNoteHelper(this.getApplicationContext());
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        /*Folder f = new Folder("folder 1");
+        ContentValues values = new ContentValues();
+        values.put(FolderContract.FolderDB.COLUMN_NAME, f.getName());
+        db.insert(FolderContract.FolderDB.TABLE_NAME, null, values);*/
+
+        List<Explorer> explorerList = new ArrayList<>();
+
+        String[] columns = {
+                FolderContract.FolderDB.COLUMN_ID,
+                FolderContract.FolderDB.COLUMN_NAME
+        };
+
+        String sortOrder = FolderContract.FolderDB.COLUMN_ID + " DESC";
+
+        Cursor folders = db.query(
+                FolderContract.FolderDB.TABLE_NAME, // table name
+                columns, // columns
+                null, // columns for the where
+                null, // where
+                null, // group rows
+                null, // filter by group rows
+                sortOrder // order by
+        );
+        folders.moveToFirst();
+        int tmp = 1;
+        while (!folders.isAfterLast())
+        {
+            sub.add(Menu.NONE, 0, tmp, folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME)));
+            tmp++;
+            folders.moveToNext();
+        }
+        folders.close();
 
 
-        List<SimpleNotePreview> notes = new ArrayList<>();
-        notes.add(new SimpleNotePreview("note"));
-        notes.add(new SimpleNotePreview("note"));
-        notes.add(new SimpleNotePreview("note"));
-        notes.add(new SimpleNotePreview("note"));
 
-        NotePreview adapter = new NotePreview(this, R.layout.simple_note_preview, notes);
+
+        // explorerList.add();
+        // explorerList.add(new Explorer(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME))));
+        /*notes.add(new ExplorerAdapter("note"));
+        notes.add(new ExplorerAdapter("note"));
+        notes.add(new ExplorerAdapter("note"));*/
+
+        ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
@@ -79,10 +112,11 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent editNote = new Intent(view.getContext(), NewMarkActivity.class);
-                editNote.putExtra("NOTE", ((SimpleNotePreview)grid.getItemAtPosition(position)).getName());
+                editNote.putExtra("NOTE", ((Explorer)grid.getItemAtPosition(position)).getName());
                 startActivity(editNote);
             }
         });
+
     }
 
     @Override

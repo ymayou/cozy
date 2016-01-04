@@ -3,13 +3,13 @@ package irc.cpe.cozy.Model;
 /**
  * Created by You on 01/01/2016.
  */
-public class SimpleNotePreview {
+public class Explorer {
     private String name;
 
-    public SimpleNotePreview() {
+    public Explorer() {
     }
 
-    public SimpleNotePreview(String name) {
+    public Explorer(String name) {
         this.name = name;
     }
 
