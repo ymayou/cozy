@@ -1,6 +1,8 @@
 package irc.cpe.cozy;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import irc.cpe.cozy.Contract.CozyNoteHelper;
+import irc.cpe.cozy.Contract.NoteContract;
+import irc.cpe.cozy.Model.Note;
 import irc.cpe.cozy.Rest.WebserviceActivity;
 
 public class NoteActivity extends AppCompatActivity {
@@ -46,7 +51,15 @@ public class NoteActivity extends AppCompatActivity {
                 content = textContent.getText().toString();
 
                 // Récupérer id du folder dans lequel est entrée la note
-                //Note newNote = new Note(title, content, 1);
+                Note newNote = new Note(title, content, 0);
+
+                SQLiteDatabase db = CozyNoteHelper.getInstance(getApplicationContext()).getReadableDatabase();
+                ContentValues values = new ContentValues();
+                values.put(NoteContract.NoteDB.COLUMN_NAME, newNote.getName());
+                values.put(NoteContract.NoteDB.COLUMN_CONTENT, newNote.getContent());
+                values.put(NoteContract.NoteDB.COLUMN_FOLDER, newNote.getFolder());
+                db.insert(NoteContract.NoteDB.TABLE_NAME, null, values);
+
                 Toast.makeText(getApplicationContext(), "Note '"+ title + "' sauvegardée",
                         Toast.LENGTH_LONG).show();
                 finish();

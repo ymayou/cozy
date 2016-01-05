@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import irc.cpe.cozy.Model.Folder;
 
@@ -75,12 +76,17 @@ public class FolderFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            //if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            /*} else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }*/
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(new MyFolderRecyclerViewAdapter(folderList, mListener));
+
+            Button addBt = (Button) recyclerView.findViewById(R.id.addFolder);
+            addBt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
         }
         return view;
     }
