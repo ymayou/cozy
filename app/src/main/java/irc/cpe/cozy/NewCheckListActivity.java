@@ -38,15 +38,15 @@ public class NewCheckListActivity extends AppCompatActivity {
     private void displayListView() {
         //Array list d'élements
         ArrayList<ListElement> liste = new ArrayList<ListElement>();
-        ListElement element = new ListElement("1", "Penser à aller faire les courses", false);
+        ListElement element = new ListElement("Penser à aller faire les courses", false);
         liste.add(element);
-        element = new ListElement("2", "Aller chez le coiffeur", false);
+        element = new ListElement("Aller chez le coiffeur", false);
         liste.add(element);
-        element = new ListElement("3", "Penser à ", false);
+        element = new ListElement("Penser à ", false);
         liste.add(element);
-        element = new ListElement("4", "Penser à ", true);
+        element = new ListElement("Penser à ", true);
         liste.add(element);
-        element = new ListElement("5", "Penser à ", false);
+        element = new ListElement("Penser à ", false);
         liste.add(element);
 
         //create an ArrayAdaptar from the String Array
@@ -61,9 +61,11 @@ public class NewCheckListActivity extends AppCompatActivity {
                                     int position, long id) {
                 // When clicked, show a toast with the TextView text
                 ListElement element = (ListElement) parent.getItemAtPosition(position);
+                element.setName("Blabla");
                 Toast.makeText(getApplicationContext(),
                         "Clicked on Row: " + element.getName(),
                         Toast.LENGTH_LONG).show();
+
             }
         });
     }
@@ -80,7 +82,6 @@ public class NewCheckListActivity extends AppCompatActivity {
         }
 
         private class ViewHolder {
-            //TextView code;
             CheckBox name;
         }
 
@@ -96,7 +97,6 @@ public class NewCheckListActivity extends AppCompatActivity {
                 convertView = vi.inflate(R.layout.list_layout, null);
 
                 holder = new ViewHolder();
-                //holder.code = (TextView) convertView.findViewById(R.id.code);
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
@@ -117,7 +117,6 @@ public class NewCheckListActivity extends AppCompatActivity {
             }
 
             ListElement element = (ListElement)liste.get(position);
-            //holder.code.setText(" (" +  element.getCode() + ")");
             holder.name.setText(element.getName());
             holder.name.setChecked(element.isSelected());
             holder.name.setTag(element);
