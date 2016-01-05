@@ -9,44 +9,42 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".NoteActivity"
-    tools:showIn="@layout/activity_note">
+    tools:context=".EditNoteActivity"
+    tools:showIn="@layout/activity_edit_note">
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/noteTitle"
+        android:id="@+id/editTitle"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:hint="Titre"/>
+        android:text="Title"/>
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/editContent"
         android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/noteContent"
-        android:layout_below="@+id/noteTitle"
+        android:layout_below="@+id/editTitle"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/noteTitle"
-        android:layout_above="@+id/noteButton"
-        android:hint="Note" />
+        android:layout_above="@+id/editOk"
+        android:text="Contenu" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Valider"
-        android:id="@+id/noteButton"
+        android:id="@+id/editOk"
+        android:layout_marginBottom="140dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="57dp"
-        android:layout_marginBottom="136dp" />
+        android:layout_alignEnd="@+id/editContent"
+        android:layout_marginEnd="39dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Annuler"
-        android:id="@+id/noteCancel"
-        android:layout_alignTop="@+id/noteButton"
-        android:layout_toStartOf="@+id/noteButton" />
+        android:id="@+id/editCancel"
+        android:layout_alignTop="@+id/editOk"
+        android:layout_toStartOf="@+id/editOk" />
 </RelativeLayout>

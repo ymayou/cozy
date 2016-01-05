@@ -1,6 +1,7 @@
 package irc.cpe.cozy.Rest;
 
 
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -13,6 +14,11 @@ import java.lang.Runnable;
 import irc.cpe.cozy.R;
 
 public class WebserviceActivity extends AppCompatActivity {
+
+    public String getDevideId() {
+        return Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,7 @@ public class WebserviceActivity extends AppCompatActivity {
         new Thread(new Runnable(){
             @Override
             public void run() {
-                NetworkManager.getInstance(WebserviceActivity.this).callCozy(lt);
+                NetworkManager.getInstance(WebserviceActivity.this).callCozy(lt, getDevideId());
             }
         }
         ).start();
