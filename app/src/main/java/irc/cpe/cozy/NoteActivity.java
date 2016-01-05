@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import irc.cpe.cozy.Rest.WebserviceActivity;
+
 public class NoteActivity extends AppCompatActivity {
 
     @Override
@@ -69,6 +71,9 @@ public class NoteActivity extends AppCompatActivity {
             }
 
         });
+
+        Intent newIntent = new Intent(getApplicationContext(), WebserviceActivity.class);
+        startActivity(newIntent);
     }
 
 }
