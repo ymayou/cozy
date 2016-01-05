@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,19 +13,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import irc.cpe.cozy.Adapter.ExplorerAdapter;
 import irc.cpe.cozy.Contract.FolderContract;
+import irc.cpe.cozy.Contract.NoteContract;
 import irc.cpe.cozy.Dao.FolderDao;
-import irc.cpe.cozy.Fragment.ExplorerFragment;
-import irc.cpe.cozy.Fragment.FolderFragment;
+import irc.cpe.cozy.Dao.NoteDao;
+import irc.cpe.cozy.Model.Explorer;
 import irc.cpe.cozy.Model.Folder;
+import irc.cpe.cozy.Model.Note;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ExplorerFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     List<Folder> foldersList = new ArrayList<>();
 
@@ -93,9 +96,23 @@ public class NavActivity extends AppCompatActivity
         {
             sub.add(Menu.NONE, f.getId(), f.getId(), f.getName());
         }
-
         // add Folder
         sub.add(Menu.NONE, 0, foldersList.size(), "Add a folder");
+
+        String[] columnsNote = {
+                NoteContract.NoteDB.COLUMN_ID,
+                NoteContract.NoteDB.COLUMN_NAME
+        };
+
+        NoteDao noteDao = new NoteDao();
+        List<Explorer> explorers = noteDao.selectExplorer(this.getApplicationContext(),
+                null, // columns for the where
+                null, // where
+                null, // group rows
+                null, // filter by group rows
+                null,
+                null
+        );
 
         // explorerList.add();
         // explorerList.add(new Explorer(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME))));
@@ -103,8 +120,7 @@ public class NavActivity extends AppCompatActivity
         notes.add(new ExplorerAdapter("note"));
         notes.add(new ExplorerAdapter("note"));*/
 
-        /*
-        ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
+        ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorers);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
@@ -113,16 +129,10 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent editNote = new Intent(view.getContext(), NoteActivity.class);
-                editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getName());
+                editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
                 startActivity(editNote);
             }
-        });*/
-
-        ExplorerFragment fragment = new ExplorerFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.nav_frame, fragment);
-        ft.commit();
-        getSupportActionBar().setTitle("Explorer");
+        });
 
     }
 
@@ -181,35 +191,6 @@ public class NavActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        //return true;
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        Menu menu = navigationView.getMenu();
-        if (id == menu.size() - 1)
-        {
-            //Toast.makeText(this.getApplicationContext(), "ajouter", Toast.LENGTH_LONG).show();
-            //startActivity(new Intent(this, NoteActivity.class));
-            FolderFragment fragment = new FolderFragment();
-            Bundle args = new Bundle();
-            ArrayList<Folder> arrFolders = new ArrayList<>();
-            arrFolders.addAll(foldersList);
-            args.putSerializable(FolderFragment.FOLDERS, arrFolders);
-            fragment.setArguments(args);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.nav_frame, fragment);
-            ft.commit();
-            getSupportActionBar().setTitle("Add folder");
-        }
         return true;
-    }
-
-    /*@Override
-    public void onListFragmentInteraction(Folder item) {
-        Toast.makeText(this.getApplicationContext(), item.getName(), Toast.LENGTH_SHORT).show();
-    }*/
-
-    @Override
-    public void onItemSelected(long id) {
-
     }
 }
