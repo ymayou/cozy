@@ -1,4 +1,4 @@
-package irc.cpe.cozy;
+package irc.cpe.cozy.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import irc.cpe.cozy.FolderFragment.OnListFragmentInteractionListener;
+//import irc.cpe.cozy.Fragment.FolderFragment.OnListFragmentInteractionListener;
 import irc.cpe.cozy.Model.Folder;
+import irc.cpe.cozy.R;
 
 import java.util.List;
 
@@ -16,12 +17,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyFolderRecyclerViewAdapter extends RecyclerView.Adapter<MyFolderRecyclerViewAdapter.ViewHolder> {
+/*public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
 
     private final List<Folder> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyFolderRecyclerViewAdapter(List<Folder> items, OnListFragmentInteractionListener listener) {
+    public FolderAdapter(List<Folder> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -58,14 +59,14 @@ public class MyFolderRecyclerViewAdapter extends RecyclerView.Adapter<MyFolderRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-       // public final TextView mIdView;
+        public final TextView mIdView;
         public final TextView mContentView;
         public Folder mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            //mIdView = (TextView) view.findViewById(R.id.id);
+            mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
         }
 
@@ -74,4 +75,4 @@ public class MyFolderRecyclerViewAdapter extends RecyclerView.Adapter<MyFolderRe
             return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
-}
+}*/

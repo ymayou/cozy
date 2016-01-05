@@ -1,8 +1,6 @@
 package irc.cpe.cozy;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,13 +19,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import irc.cpe.cozy.Contract.CozyNoteHelper;
 import irc.cpe.cozy.Contract.FolderContract;
 import irc.cpe.cozy.Dao.FolderDao;
+import irc.cpe.cozy.Fragment.ExplorerFragment;
+import irc.cpe.cozy.Fragment.FolderFragment;
 import irc.cpe.cozy.Model.Folder;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FolderFragment.OnListFragmentInteractionListener, ExplorerFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, ExplorerFragment.OnFragmentInteractionListener{
 
     List<Folder> foldersList = new ArrayList<>();
 
@@ -46,6 +45,8 @@ public class NavActivity extends AppCompatActivity
                 //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
             }
         });
+
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -74,7 +75,7 @@ public class NavActivity extends AppCompatActivity
 
         String sortOrder = FolderContract.FolderDB.COLUMN_ID + " DESC";
 
-        List<Folder> folderList = dao.select(this.getApplicationContext(),
+        foldersList = dao.select(this.getApplicationContext(),
                 columns,
                 null, // columns for the where
                 null, // where
@@ -84,13 +85,13 @@ public class NavActivity extends AppCompatActivity
                 null
         );
 
-        for (Folder f : folderList)
+        for (Folder f : foldersList)
         {
             sub.add(Menu.NONE, f.getId(), f.getId(), f.getName());
         }
 
         // add Folder
-        sub.add(Menu.NONE, 0, folderList.size(), "Ajouter un répertoire");
+        sub.add(Menu.NONE, 0, foldersList.size(), "Add a folder");
 
         // explorerList.add();
         // explorerList.add(new Explorer(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME))));
@@ -198,10 +199,10 @@ public class NavActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
+    /*@Override
     public void onListFragmentInteraction(Folder item) {
         Toast.makeText(this.getApplicationContext(), item.getName(), Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
     @Override
     public void onItemSelected(long id) {

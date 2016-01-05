@@ -1,9 +1,8 @@
-package irc.cpe.cozy;
+package irc.cpe.cozy.Fragment;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import irc.cpe.cozy.Adapter.ExplorerAdapter;
 import irc.cpe.cozy.Contract.CozyNoteHelper;
 import irc.cpe.cozy.Contract.NoteContract;
 import irc.cpe.cozy.Model.Explorer;
+import irc.cpe.cozy.R;
 
 
 /**
