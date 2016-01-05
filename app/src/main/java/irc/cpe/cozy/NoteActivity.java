@@ -23,29 +23,34 @@ public class NoteActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         //Récupération de l'id de la note à modifier
 
-        int id=-1;
+        int idNote=-1;
         Bundle extras = getIntent().getExtras();
-        id= extras.getInt("NOTE");
+        idNote = extras.getInt("NOTE");
+        /*
+        String test = Integer.toString(extras.getInt("NOTE"));
+        Toast.makeText(getApplicationContext(), "ID : '"+ test + "'",
+                Toast.LENGTH_LONG).show();*/
+
 
         final EditText textTitle=(EditText)findViewById(R.id.noteTitle);
         final EditText textContent=(EditText)findViewById(R.id.noteContent);
 
 
 
-        if (id > -1){
+        if (idNote > -1){
             NoteDao noteDao = new NoteDao();
-            Note note = new Note();
-            //note = noteDao.select(getApplicationContext(), id);
+            Note noteChanged = new Note();
+            noteChanged = noteDao.selectById(getApplicationContext(), idNote);
 
             //Récupérer contenu note en base et insérer valeurs dans editText
-            textTitle.setText(note.getName());
-            textContent.setText(note.getContent());
+            textTitle.setText(noteChanged.getName());
+            textContent.setText(noteChanged.getContent());
 
         }
 
         Button noteButton=(Button)findViewById(R.id.noteButton);
 
-        final int finalId = id;
+        final int finalId = idNote;
         noteButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -106,7 +111,7 @@ public class NoteActivity extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), "Note non sauvegardée",
                         Toast.LENGTH_LONG).show();
-                NoteActivity.this.startActivity(new Intent(NoteActivity.this, NoteActivity.class));
+                NoteActivity.this.startActivity(new Intent(NoteActivity.this, NavActivity.class));
                 finish();
 
             }
