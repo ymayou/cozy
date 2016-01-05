@@ -29,7 +29,6 @@
         android:layout_below="@+id/noteTitle"
         android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/noteTitle"
-        android:layout_above="@+id/noteButton"
         android:hint="Note" />
 
     <Button
@@ -37,10 +36,8 @@
         android:layout_height="wrap_content"
         android:text="Valider"
         android:id="@+id/noteButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="57dp"
-        android:layout_marginBottom="136dp" />
+        android:layout_below="@+id/noteContent"
+        android:layout_alignEnd="@+id/noteContent" />
 
     <Button
         android:layout_width="wrap_content"

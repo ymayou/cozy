@@ -41,8 +41,11 @@ public class NavActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Mettre l'activité en startActivityForResult
                 //NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
-                NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
+                //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
+                Intent i = new Intent(view.getContext(), NoteActivity.class);
+                startActivityForResult(i, 1);
             }
         });
 
@@ -135,8 +138,8 @@ public class NavActivity extends AppCompatActivity
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editNote = new Intent(view.getContext(), NoteActivity.class);
-                editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getName());
+                Intent editNote = new Intent(view.getContext(), EditNoteActivity.class);
+                editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
                 startActivity(editNote);
             }
         });

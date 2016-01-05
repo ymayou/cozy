@@ -1,8 +1,9 @@
 package irc.cpe.cozy;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -10,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import irc.cpe.cozy.Contract.CozyNoteHelper;
+import irc.cpe.cozy.Contract.NoteContract;
+import irc.cpe.cozy.Model.Note;
 import irc.cpe.cozy.Rest.WebserviceActivity;
 
 public class NoteActivity extends AppCompatActivity {
@@ -21,14 +25,8 @@ public class NoteActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NoteActivity.this.startActivity(new Intent(NoteActivity.this, EditNoteActivity.class));
-                finish();
-            }
-        });
+        CozyNoteHelper helper = new CozyNoteHelper(this.getApplicationContext());
+        final SQLiteDatabase db = helper.getReadableDatabase();
 
         Button noteButton=(Button)findViewById(R.id.noteButton);
 
@@ -46,7 +44,13 @@ public class NoteActivity extends AppCompatActivity {
                 content = textContent.getText().toString();
 
                 // Récupérer id du folder dans lequel est entrée la note
-                //Note newNote = new Note(title, content, 1);
+                Note newNote = new Note(title, content, 1);
+
+                ContentValues values = new ContentValues();
+                values.put(NoteContract.NoteDB.COLUMN_NAME, newNote.getName());
+                values.put(NoteContract.NoteDB.COLUMN_CONTENT, newNote.getContent());
+                db.insert(NoteContract.NoteDB.TABLE_NAME, null, values);
+
                 Toast.makeText(getApplicationContext(), "Note '"+ title + "' sauvegardée",
                         Toast.LENGTH_LONG).show();
                 finish();
