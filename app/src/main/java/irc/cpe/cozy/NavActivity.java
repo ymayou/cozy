@@ -41,8 +41,8 @@ public class NavActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
-                //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
+                //NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
+                NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
             }
         });
 
