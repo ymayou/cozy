@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import irc.cpe.cozy.Rest.EditNoteActivity;
 import irc.cpe.cozy.Rest.WebserviceActivity;
 
 public class NoteActivity extends AppCompatActivity {

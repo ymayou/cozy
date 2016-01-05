@@ -17,7 +17,7 @@ package="irc.cpe.cozy">
     <activity android:name=".NewCheckListActivity" android:label="@string/title_activity_nav"
         android:theme="@style/AppTheme.NoActionBar"/>
     <activity
-        android:name=".Rest.EditNoteActivity"
+        android:name=".EditNoteActivity"
         android:label="@string/title_activity_edit_note"
         android:theme="@style/AppTheme.NoActionBar"></activity>
 </application>
