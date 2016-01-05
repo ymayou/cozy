@@ -10,9 +10,15 @@ package="irc.cpe.cozy">
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
+
     <activity android:name=".NoteActivity" android:label="@string/title_activity_new_mark"
         android:theme="@style/AppTheme.NoActionBar"/>
+
     <activity android:name=".Rest.WebserviceActivity"></activity>
+
+    <activity android:name=".NewCheckListActivity" android:label="@string/title_activity_nav"
+        android:theme="@style/AppTheme.NoActionBar"/>
+
 </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

@@ -42,6 +42,7 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
+                //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
             }
         });
 
@@ -130,12 +131,12 @@ public class NavActivity extends AppCompatActivity
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent editNote = new Intent(view.getContext(), NoteActivity.class);
-                editNote.putExtra("NOTE", ((Explorer)grid.getItemAtPosition(position)).getName());
+                editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getName());
                 startActivity(editNote);
             }
         });
