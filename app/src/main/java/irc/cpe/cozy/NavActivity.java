@@ -1,8 +1,6 @@
 package irc.cpe.cozy;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,8 +19,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import irc.cpe.cozy.Contract.CozyNoteHelper;
 import irc.cpe.cozy.Contract.FolderContract;
+import irc.cpe.cozy.Dao.FolderDao;
 import irc.cpe.cozy.Model.Folder;
 
 public class NavActivity extends AppCompatActivity
@@ -42,10 +40,11 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //Mettre l'activité en startActivityForResult
-                //NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
+                
+                NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
                 //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
-                Intent i = new Intent(view.getContext(), NoteActivity.class);
-                startActivityForResult(i, 1);
+                /*Intent i = new Intent(view.getContext(), NoteActivity.class);
+                startActivityForResult(i, 1);*/
             }
         });
 
@@ -63,13 +62,11 @@ public class NavActivity extends AppCompatActivity
         menu.clear();
         SubMenu sub = menu.addSubMenu(Menu.NONE, 0, 0, "Folders");
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        CozyNoteHelper helper = new CozyNoteHelper(this.getApplicationContext());
-        SQLiteDatabase db = helper.getReadableDatabase();
+
+        FolderDao dao = new FolderDao();
 
         /*Folder f = new Folder("folder 1");
-        ContentValues values = new ContentValues();
-        values.put(FolderContract.FolderDB.COLUMN_NAME, f.getName());
-        db.insert(FolderContract.FolderDB.TABLE_NAME, null, values);*/
+        dao.insert(f);*/
 
         String[] columns = {
                 FolderContract.FolderDB.COLUMN_ID,
@@ -78,25 +75,23 @@ public class NavActivity extends AppCompatActivity
 
         String sortOrder = FolderContract.FolderDB.COLUMN_ID + " DESC";
 
-        Cursor folders = db.query(
-                FolderContract.FolderDB.TABLE_NAME, // table name
-                columns, // columns
+        List<Folder> folderList = dao.select(this.getApplicationContext(),
+                columns,
                 null, // columns for the where
                 null, // where
                 null, // group rows
                 null, // filter by group rows
-                sortOrder // order by
+                sortOrder,
+                null
         );
-        folders.moveToFirst();
-        while (!folders.isAfterLast())
+
+        for (Folder f : folderList)
         {
-            sub.add(Menu.NONE, Integer.parseInt(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_ID))), Integer.parseInt(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_ID))), folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME)));
-            foldersList.add(new Folder(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME))));
-            folders.moveToNext();
+            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName());
         }
-        folders.close();
+
         // add Folder
-        sub.add(Menu.NONE, 0, menu.size(), "Ajouter un répertoire");
+        sub.add(Menu.NONE, 0, folderList.size(), "Ajouter un répertoire");
 
         // explorerList.add();
         // explorerList.add(new Explorer(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME))));
@@ -104,30 +99,7 @@ public class NavActivity extends AppCompatActivity
         notes.add(new ExplorerAdapter("note"));
         notes.add(new ExplorerAdapter("note"));*/
 
-        /*List<Explorer> explorerList = new ArrayList<>();
-        String [] cols = {
-            NoteContract.NoteDB.COLUMN_ID,
-            NoteContract.NoteDB.COLUMN_NAME,
-            NoteContract.NoteDB.COLUMN_FOLDER,
-            NoteContract.NoteDB.COLUMN_CONTENT
-        };
-        Cursor notes = db.query(
-                NoteContract.NoteDB.TABLE_NAME, // table name
-                cols, // columns
-                null, // columns for the where
-                null, // where
-                null, // group rows
-                null, // filter by group rows
-                null // order by
-        );
-        notes.moveToFirst();
-        while (!notes.isAfterLast())
-        {
-            explorerList.add(new Explorer(Integer.parseInt(notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_ID))), notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_NAME))));
-            notes.moveToNext();
-        }
-        notes.close();
-
+        /*
         ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
@@ -136,8 +108,8 @@ public class NavActivity extends AppCompatActivity
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editNote = new Intent(view.getContext(), EditNoteActivity.class);
-                editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
+                Intent editNote = new Intent(view.getContext(), NoteActivity.class);
+                editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getName());
                 startActivity(editNote);
             }
         });*/
