@@ -27,7 +27,6 @@ import irc.cpe.cozy.Dao.FolderDao;
 import irc.cpe.cozy.Dao.NoteDao;
 import irc.cpe.cozy.Model.Explorer;
 import irc.cpe.cozy.Model.Folder;
-import irc.cpe.cozy.Model.Note;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -96,12 +95,7 @@ public class NavActivity extends AppCompatActivity
             sub.add(Menu.NONE, f.getId(), f.getId(), f.getName());
         }
         // add Folder
-        sub.add(Menu.NONE, 0, foldersList.size(), "Add a folder");
-
-        String[] columnsNote = {
-                NoteContract.NoteDB.COLUMN_ID,
-                NoteContract.NoteDB.COLUMN_NAME
-        };
+        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders");
 
         NoteDao noteDao = new NoteDao();
         List<Explorer> explorers = noteDao.selectExplorer(this.getApplicationContext(),
@@ -112,12 +106,6 @@ public class NavActivity extends AppCompatActivity
                 null,
                 null
         );
-
-        // explorerList.add();
-        // explorerList.add(new Explorer(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME))));
-        /*notes.add(new ExplorerAdapter("note"));
-        notes.add(new ExplorerAdapter("note"));
-        notes.add(new ExplorerAdapter("note"));*/
 
         ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorers);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
@@ -186,6 +174,13 @@ public class NavActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         }*/
+
+        if (id == 0)
+        {
+            // manage folders
+            Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
+            startActivity(manage);
+        }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
