@@ -99,11 +99,11 @@ public class NavActivity extends AppCompatActivity
         notes.add(new ExplorerAdapter("note"));
         notes.add(new ExplorerAdapter("note"));*/
 
-        /*
-        ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
-        final GridView grid = (GridView) findViewById(R.id.noteGrid);
-        grid.setAdapter(adapter);
 
+        //ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
+        //final GridView grid = (GridView) findViewById(R.id.noteGrid);
+        //grid.setAdapter(adapter);
+/*
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override

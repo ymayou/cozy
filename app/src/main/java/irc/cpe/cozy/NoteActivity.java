@@ -21,7 +21,21 @@ public class NoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_note);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
+        //Récupération de l'id de la note à modifier
+        final int id=-1;
+
+        final EditText textTitle=(EditText)findViewById(R.id.noteTitle);
+        final EditText textContent=(EditText)findViewById(R.id.noteContent);
+
+
+        if (id > -1){
+
+            //Récupérer contenu note en base et insérer valeurs dans editText
+            textTitle.setText("Titre de la note");
+            textContent.setText("Contenu de la note à éditer");
+
+        }
+
         Button noteButton=(Button)findViewById(R.id.noteButton);
 
         noteButton.setOnClickListener(new View.OnClickListener() {
@@ -31,17 +45,23 @@ public class NoteActivity extends AppCompatActivity {
                 String title;
                 String content;
 
-                EditText textTitle=(EditText)findViewById(R.id.noteTitle);
-                EditText textContent=(EditText)findViewById(R.id.noteContent);
-
                 title = textTitle.getText().toString();
                 content = textContent.getText().toString();
 
                 // Récupérer id du folder dans lequel est entrée la note
                 Note newNote = new Note(title, content, 0);
 
-                NoteDao noteDao = new NoteDao();
-                noteDao.insert(getApplicationContext(), newNote);
+                if(id>-1){
+                    //Modification de la note existante
+                    NoteDao noteDao = new NoteDao();
+                    //noteDao.update(getApplicationContext(), newNote);
+                }else{
+                    //Insertion de la nouvelle note
+                    NoteDao noteDao = new NoteDao();
+                    noteDao.insert(getApplicationContext(), newNote);
+                }
+
+
 
                 Toast.makeText(getApplicationContext(), "Note '"+ title + "' sauvegardée",
                         Toast.LENGTH_LONG).show();
