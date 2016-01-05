@@ -22,22 +22,30 @@ public class NoteActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //Récupération de l'id de la note à modifier
-        final int id=-1;
+
+        int id=-1;
+        Bundle extras = getIntent().getExtras();
+        id= extras.getInt("NOTE");
 
         final EditText textTitle=(EditText)findViewById(R.id.noteTitle);
         final EditText textContent=(EditText)findViewById(R.id.noteContent);
 
 
+
         if (id > -1){
+            NoteDao noteDao = new NoteDao();
+            Note note = new Note();
+            //note = noteDao.select(getApplicationContext(), id);
 
             //Récupérer contenu note en base et insérer valeurs dans editText
-            textTitle.setText("Titre de la note");
-            textContent.setText("Contenu de la note à éditer");
+            textTitle.setText(note.getName());
+            textContent.setText(note.getContent());
 
         }
 
         Button noteButton=(Button)findViewById(R.id.noteButton);
 
+        final int finalId = id;
         noteButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -48,14 +56,12 @@ public class NoteActivity extends AppCompatActivity {
                 title = textTitle.getText().toString();
                 content = textContent.getText().toString();
 
-                // Récupérer id du folder dans lequel est entrée la note
-                Note newNote = new Note(title, content, 0);
-
-                if(id>-1){
+                if(finalId >-1){
                     //Modification de la note existante
                     NoteDao noteDao = new NoteDao();
                     //noteDao.update(getApplicationContext(), newNote);
                 }else{
+                    Note newNote = new Note(title, content, 0);
                     //Insertion de la nouvelle note
                     NoteDao noteDao = new NoteDao();
                     noteDao.insert(getApplicationContext(), newNote);

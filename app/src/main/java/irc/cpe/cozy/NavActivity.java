@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,7 +26,6 @@ import irc.cpe.cozy.Dao.FolderDao;
 import irc.cpe.cozy.Dao.NoteDao;
 import irc.cpe.cozy.Model.Explorer;
 import irc.cpe.cozy.Model.Folder;
-import irc.cpe.cozy.Model.Note;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
