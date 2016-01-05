@@ -1,6 +1,5 @@
 package irc.cpe.cozy;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,23 +16,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import irc.cpe.cozy.Adapter.ExplorerAdapter;
 import irc.cpe.cozy.Contract.CozyNoteHelper;
 import irc.cpe.cozy.Contract.FolderContract;
-import irc.cpe.cozy.Contract.NoteContract;
-import irc.cpe.cozy.Model.Explorer;
 import irc.cpe.cozy.Model.Folder;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FolderFragment.OnListFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, FolderFragment.OnListFragmentInteractionListener, ExplorerFragment.OnFragmentInteractionListener{
 
     List<Folder> foldersList = new ArrayList<>();
 
@@ -69,10 +62,10 @@ public class NavActivity extends AppCompatActivity
         CozyNoteHelper helper = new CozyNoteHelper(this.getApplicationContext());
         SQLiteDatabase db = helper.getReadableDatabase();
 
-        Folder f = new Folder("folder 1");
+        /*Folder f = new Folder("folder 1");
         ContentValues values = new ContentValues();
         values.put(FolderContract.FolderDB.COLUMN_NAME, f.getName());
-        db.insert(FolderContract.FolderDB.TABLE_NAME, null, values);
+        db.insert(FolderContract.FolderDB.TABLE_NAME, null, values);*/
 
         String[] columns = {
                 FolderContract.FolderDB.COLUMN_ID,
@@ -107,7 +100,7 @@ public class NavActivity extends AppCompatActivity
         notes.add(new ExplorerAdapter("note"));
         notes.add(new ExplorerAdapter("note"));*/
 
-        List<Explorer> explorerList = new ArrayList<>();
+        /*List<Explorer> explorerList = new ArrayList<>();
         String [] cols = {
             NoteContract.NoteDB.COLUMN_ID,
             NoteContract.NoteDB.COLUMN_NAME,
@@ -131,7 +124,7 @@ public class NavActivity extends AppCompatActivity
         }
         notes.close();
 
-        /*ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
+        ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorerList);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
@@ -144,6 +137,12 @@ public class NavActivity extends AppCompatActivity
                 startActivity(editNote);
             }
         });*/
+
+        ExplorerFragment fragment = new ExplorerFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.nav_frame, fragment);
+        ft.commit();
+        getSupportActionBar().setTitle("Explorer");
 
     }
 
@@ -227,5 +226,10 @@ public class NavActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(Folder item) {
         Toast.makeText(this.getApplicationContext(), item.getName(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemSelected(long id) {
+
     }
 }
