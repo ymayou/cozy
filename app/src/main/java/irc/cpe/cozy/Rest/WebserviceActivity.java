@@ -1,21 +1,20 @@
 package irc.cpe.cozy.Rest;
 
-
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.Runnable;
+import java.util.Properties;
 
 import irc.cpe.cozy.R;
 
 public class WebserviceActivity extends AppCompatActivity {
 
-    public String getDevideId() {
+    public String getDeviceId() {
         return Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
     }
@@ -25,26 +24,22 @@ public class WebserviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav);
 
-        final WebserviceListener lt = new WebserviceListener(){
+        final WebserviceListener lt = new WebserviceListener() {
             @Override
-            public void notesChanged(final String data) {
+            public void notesChanged(final String password) {
                 runOnUiThread(new Runnable() {
                     @Override
-                    public void run(){
-                        TextView editText = (TextView) findViewById(R.id.textView);
-                        editText.setText("OK");
-                        System.out.println(data);
-                        //JSONArray jsonArray = new JSONArray(data);
-                        //System.out.println(jsonArray.length());
+                    public void run() {
+                        System.out.println(password);
                     }
                 });
             }
         };
 
-        new Thread(new Runnable(){
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                NetworkManager.getInstance(WebserviceActivity.this).callCozy(lt, getDevideId());
+                NetworkManager.getInstance(WebserviceActivity.this).callCozy(lt, getDeviceId());
             }
         }
         ).start();
