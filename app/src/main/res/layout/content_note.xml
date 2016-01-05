@@ -41,4 +41,12 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="57dp"
         android:layout_marginBottom="136dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Annuler"
+        android:id="@+id/noteCancel"
+        android:layout_alignTop="@+id/noteButton"
+        android:layout_toStartOf="@+id/noteButton" />
 </RelativeLayout>
