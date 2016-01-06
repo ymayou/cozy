@@ -35,6 +35,7 @@ public class NavActivity extends AppCompatActivity
     private List<Explorer> explorers;
     private NoteDao noteDao;
     private ExplorerAdapter adapter;
+    private MenuItem selectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,15 @@ public class NavActivity extends AppCompatActivity
                 //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
                 Intent i = new Intent(view.getContext(), NoteActivity.class);
                 startActivityForResult(i, 1);
+            }
+        });
+
+        FloatingActionButton fabList = (FloatingActionButton) findViewById(R.id.fabList);
+        fabList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent list = new Intent(v.getContext(), NewCheckListActivity.class);
+                startActivity(list);
             }
         });
 
@@ -138,6 +148,8 @@ public class NavActivity extends AppCompatActivity
                 reloadExplorer(0);
                 break;
             case R.id.connexion:
+                Intent login = new Intent(this.getApplicationContext(), LoginActivity.class);
+                startActivity(login);
                 break;
             default:
                 break;
