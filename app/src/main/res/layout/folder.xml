@@ -23,7 +23,7 @@
         android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/deleteBtn"
-        android:src="@android:drawable/ic_menu_edit"
+        android:src="@drawable/ic_mode_edit_24_black"
         android:onClick="editFolder" />
 
     <ImageButton
@@ -33,6 +33,6 @@
         android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:src="@android:drawable/ic_menu_delete"
+        android:src="@drawable/ic_delete_24_black"
         android:onClick="deleteFolder" />
 </RelativeLayout>

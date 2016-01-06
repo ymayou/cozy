@@ -22,12 +22,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/addFolder"
-        android:src="@android:drawable/ic_menu_send"
+        android:src="@drawable/ic_done_24_black"
         android:clickable="true"
         android:onClick="addFolder"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/folderName" />
+        android:layout_above="@+id/foldersList" />
 
     <ListView
         android:layout_width="wrap_content"
