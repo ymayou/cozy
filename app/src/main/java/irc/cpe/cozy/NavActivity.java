@@ -15,7 +15,6 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +35,7 @@ public class NavActivity extends AppCompatActivity
     private List<Explorer> explorers;
     private NoteDao noteDao;
     private ExplorerAdapter adapter;
+    private MenuItem selectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,7 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         menu = navigationView.getMenu();
+        //menu.set
         updateMenu();
 
         noteDao = new NoteDao();
@@ -140,10 +141,13 @@ public class NavActivity extends AppCompatActivity
             case R.id.connexion:
                 break;
             default:
-                Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
-                startActivity(manage);
                 break;
         }
+
+        if (selectedItem != null)
+            selectedItem.setChecked(false);
+        item.setChecked(true);
+        selectedItem = item;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -202,20 +206,28 @@ public class NavActivity extends AppCompatActivity
 
         for (Folder f : foldersList)
         {
-            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName()).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName()).setIcon(R.drawable.common_ic_googleplayservices).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
+                    if (selectedItem != null)
+                        selectedItem.setChecked(false);
+                    item.setChecked(true);
+                    selectedItem = item;
                     reloadExplorer(item.getItemId());
-
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                    return true;
+                    return onNavigationItemSelected(item);
                 }
             });
 
         }
         // manage Folders
-        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders");
+        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
+                startActivity(manage);
+                return onNavigationItemSelected(item);
+            }
+        });
     }
 
 }
