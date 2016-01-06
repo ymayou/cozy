@@ -11,14 +11,16 @@ public class NoteTaskNoteContract {
         public static final String TABLE_NAME = "noteTaskNote";
 
         public static final String COLUMN_ID = "_id";
-        public static final String COLUMN_NOTE= "note";
+        public static final String COLUMN_CONTENT= "content";
+        public static final String COLUMN_STATUS= "status";
         public static final String COLUMN_TASKNOTE = "taskNote";
     }
 
     private static final String SQL_CREATE_TABLE_NOTETASKNOTE =
             "CREATE TABLE " + NoteTaskNoteDB.TABLE_NAME + " (" +
                     NoteTaskNoteDB.COLUMN_ID + " INTEGER PRIMARY KEY," +
-                    NoteTaskNoteDB.COLUMN_NOTE + " INTEGER NOT NULL, " +
+                    NoteTaskNoteDB.COLUMN_CONTENT + " INTEGER NOT NULL, " +
+                    NoteTaskNoteDB.COLUMN_STATUS + " INTEGER DEFAULT 0 " +
                     NoteTaskNoteDB.COLUMN_TASKNOTE + " INTEGER NOT NULL " +
                     " )";
 

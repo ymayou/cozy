@@ -31,7 +31,16 @@ public class FolderDao implements CommonDao<Folder> {
 
     @Override
     public Folder selectById(Context context, int id) {
-        return null;
+        String[] columns = {
+                FolderContract.FolderDB.COLUMN_ID,
+                FolderContract.FolderDB.COLUMN_NAME
+        };
+
+        Cursor folders  = CozyNoteHelper.getInstance(context).getReadableDatabase().query(FolderContract.FolderDB.TABLE_NAME, columns, FolderContract.FolderDB.COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        folders.moveToFirst();
+        Folder folder = new Folder(Integer.parseInt(folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_ID))), folders.getString(folders.getColumnIndex(FolderContract.FolderDB.COLUMN_NAME)));
+        folders.close();
+        return folder;
     }
 
     @Override

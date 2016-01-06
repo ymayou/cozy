@@ -84,6 +84,7 @@ public class NoteDao implements CommonDao<Note> {
         Cursor notes  = CozyNoteHelper.getInstance(context).getReadableDatabase().query(NoteContract.NoteDB.TABLE_NAME, columns, NoteContract.NoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         notes.moveToFirst();
         Note note = new Note(Integer.parseInt(notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_ID))), notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_NAME)), notes.getColumnName(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_CONTENT)), Integer.parseInt(notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_FOLDER))));
+        notes.close();
         return note;
     }
 
