@@ -22,22 +22,35 @@ public class NoteActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //Récupération de l'id de la note à modifier
-        final int id=-1;
+
+        int idNote=-1;
+        Bundle extras = getIntent().getExtras();
+        idNote = extras.getInt("NOTE");
+        /*
+        String test = Integer.toString(extras.getInt("NOTE"));
+        Toast.makeText(getApplicationContext(), "ID : '"+ test + "'",
+                Toast.LENGTH_LONG).show();*/
+
 
         final EditText textTitle=(EditText)findViewById(R.id.noteTitle);
         final EditText textContent=(EditText)findViewById(R.id.noteContent);
 
 
-        if (id > -1){
+
+        if (idNote > -1){
+            NoteDao noteDao = new NoteDao();
+            Note noteChanged = new Note();
+            noteChanged = noteDao.selectById(getApplicationContext(), idNote);
 
             //Récupérer contenu note en base et insérer valeurs dans editText
-            textTitle.setText("Titre de la note");
-            textContent.setText("Contenu de la note à éditer");
+            textTitle.setText(noteChanged.getName());
+            textContent.setText(noteChanged.getContent());
 
         }
 
         Button noteButton=(Button)findViewById(R.id.noteButton);
 
+        final int finalId = idNote;
         noteButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -48,14 +61,12 @@ public class NoteActivity extends AppCompatActivity {
                 title = textTitle.getText().toString();
                 content = textContent.getText().toString();
 
-                // Récupérer id du folder dans lequel est entrée la note
-                Note newNote = new Note(title, content, 0);
-
-                if(id>-1){
+                if(finalId >-1){
                     //Modification de la note existante
                     NoteDao noteDao = new NoteDao();
                     //noteDao.update(getApplicationContext(), newNote);
                 }else{
+                    Note newNote = new Note(title, content, 0);
                     //Insertion de la nouvelle note
                     NoteDao noteDao = new NoteDao();
                     noteDao.insert(getApplicationContext(), newNote);
@@ -100,7 +111,7 @@ public class NoteActivity extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), "Note non sauvegardée",
                         Toast.LENGTH_LONG).show();
-                NoteActivity.this.startActivity(new Intent(NoteActivity.this, NoteActivity.class));
+                NoteActivity.this.startActivity(new Intent(NoteActivity.this, NavActivity.class));
                 finish();
 
             }
