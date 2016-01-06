@@ -20,7 +20,7 @@ public class NoteTaskNoteContract {
             "CREATE TABLE " + NoteTaskNoteDB.TABLE_NAME + " (" +
                     NoteTaskNoteDB.COLUMN_ID + " INTEGER PRIMARY KEY," +
                     NoteTaskNoteDB.COLUMN_CONTENT + " INTEGER NOT NULL, " +
-                    NoteTaskNoteDB.COLUMN_STATUS + " INTEGER DEFAULT 0 " +
+                    NoteTaskNoteDB.COLUMN_STATUS + " INTEGER DEFAULT 0, " +
                     NoteTaskNoteDB.COLUMN_TASKNOTE + " INTEGER NOT NULL " +
                     " )";
 
