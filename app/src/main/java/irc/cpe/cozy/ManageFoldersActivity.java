@@ -1,11 +1,12 @@
 package irc.cpe.cozy;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ import irc.cpe.cozy.Model.Folder;
 public class ManageFoldersActivity extends AppCompatActivity {
 
     private FolderAdapter adapter;
+    ListView foldersView;
+    private FolderDao dao = new FolderDao();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,30 +30,47 @@ public class ManageFoldersActivity extends AppCompatActivity {
                 FolderContract.FolderDB.COLUMN_ID,
                 FolderContract.FolderDB.COLUMN_NAME
         };
-        FolderDao dao = new FolderDao();
         List<Folder> folders =  dao.select(getApplicationContext(), columns, null, null, null, null, null, null);
-        ListView foldersView = (ListView) findViewById(R.id.foldersList);
+        foldersView = (ListView) findViewById(R.id.foldersList);
         adapter = new FolderAdapter(getApplicationContext(), R.layout.folder, folders);
         foldersView.setAdapter(adapter);
     }
 
-    public void editFolder(View view)
+    public void editFolder(final View view)
     {
-        Toast.makeText(view.getContext(), "edit", Toast.LENGTH_SHORT).show();
+        final Folder folder = (Folder)foldersView.getAdapter().getItem(foldersView.getPositionForView((View)view.getParent()));
+        final AlertDialog.Builder editName = new AlertDialog.Builder(this);
+        editName.setTitle("Edit folder name");
+        editName.setCancelable(true);
+        final EditText name = new EditText(this);
+        name.setText(folder.getName());
+        editName.setView(name);
+        editName.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                folder.setName(name.getText().toString());
+                dao.update(view.getContext(), folder);
+                reloadData();
+            }
+        });
+        editName.show();
     }
 
     public void deleteFolder(View view)
     {
-        Toast.makeText(view.getContext(), "delete", Toast.LENGTH_SHORT).show();
+        Folder folder = (Folder)foldersView.getAdapter().getItem(foldersView.getPositionForView((View)view.getParent()));
+        dao.delete(view.getContext(), folder.getId());
+        reloadData();
     }
 
     public void addFolder(View view)
     {
         EditText name = (EditText) findViewById(R.id.folderName);
         Folder folder = new Folder(name.getText().toString());
-        FolderDao dao = new FolderDao();
+        dao = new FolderDao();
         dao.insert(view.getContext(), folder);
         reloadData();
+        name.setText("");
     }
 
     public void reloadData()
@@ -59,7 +79,7 @@ public class ManageFoldersActivity extends AppCompatActivity {
                 FolderContract.FolderDB.COLUMN_ID,
                 FolderContract.FolderDB.COLUMN_NAME
         };
-        FolderDao dao = new FolderDao();
+        dao = new FolderDao();
         List<Folder> folders =  dao.select(getApplicationContext(), columns, null, null, null, null, null, null);
         adapter.clear();
         adapter.addAll(folders);

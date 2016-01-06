@@ -15,12 +15,14 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import irc.cpe.cozy.Adapter.ExplorerAdapter;
 import irc.cpe.cozy.Contract.FolderContract;
+import irc.cpe.cozy.Contract.NoteContract;
 import irc.cpe.cozy.Dao.FolderDao;
 import irc.cpe.cozy.Dao.NoteDao;
 import irc.cpe.cozy.Model.Explorer;
@@ -31,6 +33,9 @@ public class NavActivity extends AppCompatActivity
 
     private List<Folder> foldersList = new ArrayList<>();
     private Menu menu;
+    private List<Explorer> explorers;
+    private NoteDao noteDao;
+    private ExplorerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +71,8 @@ public class NavActivity extends AppCompatActivity
         menu.clear();
         updateMenu();
 
-        NoteDao noteDao = new NoteDao();
-        List<Explorer> explorers = noteDao.selectExplorer(this.getApplicationContext(),
+        noteDao = new NoteDao();
+        explorers = noteDao.selectExplorer(this.getApplicationContext(),
                 null, // columns for the where
                 null, // where
                 null, // group rows
@@ -76,7 +81,7 @@ public class NavActivity extends AppCompatActivity
                 null
         );
 
-        ExplorerAdapter adapter = new ExplorerAdapter(this, R.layout.explorer, explorers);
+        adapter = new ExplorerAdapter(this, R.layout.explorer, explorers);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
@@ -129,28 +134,16 @@ public class NavActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        /*Toast.makeText(this.getApplicationContext(), id + "", Toast.LENGTH_LONG).show();
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
-
         if (id == 0)
         {
             // manage folders
             Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
             startActivity(manage);
         }
-
+        else
+        {
+            reloadExplorer(id);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -162,6 +155,22 @@ public class NavActivity extends AppCompatActivity
     {
         super.onResume();
         updateMenu();
+    }
+
+    private void reloadExplorer(int idFolder)
+    {
+        explorers = noteDao.selectExplorer(this.getApplicationContext(),
+                NoteContract.NoteDB.COLUMN_FOLDER + "=?", // columns for the where
+                new String[]{String.valueOf(idFolder)}, // where
+                null, // group rows
+                null, // filter by group rows
+                null,
+                null
+        );
+
+        adapter .clear();
+        adapter.addAll(explorers);
+        adapter.notifyDataSetChanged();
     }
 
     private void updateMenu()
