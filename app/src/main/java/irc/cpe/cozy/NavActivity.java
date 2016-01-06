@@ -15,7 +15,6 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +49,10 @@ public class NavActivity extends AppCompatActivity
             public void onClick(View view) {
                 //Mettre l'activité en startActivityForResult
                 
-                NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
+                //NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
                 //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
-                /*Intent i = new Intent(view.getContext(), NoteActivity.class);
-                startActivityForResult(i, 1);*/
+                Intent i = new Intent(view.getContext(), NoteActivity.class);
+                startActivityForResult(i, 1);
             }
         });
 
@@ -91,7 +90,7 @@ public class NavActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent editNote = new Intent(view.getContext(), NoteActivity.class);
                 editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
-                startActivity(editNote);
+                startActivityForResult(editNote, 1);
             }
         });
 
@@ -157,6 +156,18 @@ public class NavActivity extends AppCompatActivity
         updateMenu();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == NoteActivity.RESULT_OK){
+                reloadExplorer(0);
+            }
+            if (resultCode == NoteActivity.RESULT_CANCELED) {
+                //In case of cancellation
+            }
+        }
+    }//onActivityResult
+
     private void reloadExplorer(int idFolder)
     {
         explorers = noteDao.selectExplorer(this.getApplicationContext(),
@@ -168,7 +179,7 @@ public class NavActivity extends AppCompatActivity
                 null
         );
 
-        adapter .clear();
+        adapter.clear();
         adapter.addAll(explorers);
         adapter.notifyDataSetChanged();
     }
