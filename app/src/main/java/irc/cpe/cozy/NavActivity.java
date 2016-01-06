@@ -35,6 +35,7 @@ public class NavActivity extends AppCompatActivity
     private List<Explorer> explorers;
     private NoteDao noteDao;
     private ExplorerAdapter adapter;
+    private MenuItem selectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
