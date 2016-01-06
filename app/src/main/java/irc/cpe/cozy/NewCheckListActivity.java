@@ -3,14 +3,10 @@ package irc.cpe.cozy;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -20,12 +16,12 @@ import irc.cpe.cozy.Model.ListElement;
  * Created by Angèle on 18/12/2015.
  */
 public class NewCheckListActivity extends AppCompatActivity {
-    MyCustomAdapter dataAdapter = null;
+    //MyCustomAdapter dataAdapter = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.checklist_main);
+        setContentView(R.layout.list_layout);
 
         //Generate list View from ArrayList
         displayListView();
@@ -52,10 +48,10 @@ public class NewCheckListActivity extends AppCompatActivity {
         //liste.get(1).setName("BlaBla");
 
         //create an ArrayAdaptar from the String Array
-        dataAdapter = new MyCustomAdapter(this, R.layout.list_layout, liste);
-        final ListView listView = (ListView) findViewById(R.id.listView1);
+        //dataAdapter = new MyCustomAdapter(this, R.layout.list_layout, liste);
+        //final ListView listView = (ListView) findViewById(R.id.listView1);
         // Assign adapter to ListView
-        listView.setAdapter(dataAdapter);
+        //listView.setAdapter(dataAdapter);
 
 
         //EditText textElement =(EditText)findViewById(R.id.textElement);
@@ -103,7 +99,7 @@ public class NewCheckListActivity extends AppCompatActivity {
             CheckBox name;
         }
 
-        @Override
+        /*@Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
             ViewHolder holder = null;
@@ -127,7 +123,7 @@ public class NewCheckListActivity extends AppCompatActivity {
             holder.name.setTag(element);
 
             return convertView;
-        }
+        }*/
     }
 
     public void onCheckboxClicked(View view) {
