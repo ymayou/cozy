@@ -29,7 +29,9 @@
             android:name=".NewCheckListActivity"
             android:label="@string/title_activity_nav"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ManageFoldersActivity"></activity>
+        <activity
+            android:name=".ManageFoldersActivity"
+            android:label="@string/manageFolders" />
     </application>
 
 </manifest>

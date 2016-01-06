@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,7 +21,6 @@ import java.util.List;
 
 import irc.cpe.cozy.Adapter.ExplorerAdapter;
 import irc.cpe.cozy.Contract.FolderContract;
-import irc.cpe.cozy.Contract.NoteContract;
 import irc.cpe.cozy.Dao.FolderDao;
 import irc.cpe.cozy.Dao.NoteDao;
 import irc.cpe.cozy.Model.Explorer;
@@ -31,7 +29,8 @@ import irc.cpe.cozy.Model.Folder;
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    List<Folder> foldersList = new ArrayList<>();
+    private List<Folder> foldersList = new ArrayList<>();
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,39 +62,9 @@ public class NavActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Menu menu = navigationView.getMenu();
+        menu = navigationView.getMenu();
         menu.clear();
-        SubMenu sub = menu.addSubMenu(Menu.NONE, 0, 0, "Folders");
-        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-        FolderDao dao = new FolderDao();
-
-        /*Folder f = new Folder("folder 1");
-        dao.insert(f);*/
-
-        String[] columns = {
-                FolderContract.FolderDB.COLUMN_ID,
-                FolderContract.FolderDB.COLUMN_NAME
-        };
-
-        String sortOrder = FolderContract.FolderDB.COLUMN_ID + " DESC";
-
-        foldersList = dao.select(this.getApplicationContext(),
-                columns,
-                null, // columns for the where
-                null, // where
-                null, // group rows
-                null, // filter by group rows
-                sortOrder,
-                null
-        );
-
-        for (Folder f : foldersList)
-        {
-            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName());
-        }
-        // add Folder
-        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders");
+        updateMenu();
 
         NoteDao noteDao = new NoteDao();
         List<Explorer> explorers = noteDao.selectExplorer(this.getApplicationContext(),
@@ -187,4 +156,45 @@ public class NavActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        updateMenu();
+    }
+
+    private void updateMenu()
+    {
+        menu.clear();
+        SubMenu sub = menu.addSubMenu(Menu.NONE, 0, 0, "Folders");
+        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        FolderDao dao = new FolderDao();
+
+        String[] columns = {
+                FolderContract.FolderDB.COLUMN_ID,
+                FolderContract.FolderDB.COLUMN_NAME
+        };
+
+        String sortOrder = FolderContract.FolderDB.COLUMN_ID + " DESC";
+
+        foldersList = dao.select(this.getApplicationContext(),
+                columns,
+                null, // columns for the where
+                null, // where
+                null, // group rows
+                null, // filter by group rows
+                sortOrder,
+                null
+        );
+
+        for (Folder f : foldersList)
+        {
+            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName());
+        }
+        // manage Folders
+        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders");
+    }
+
 }

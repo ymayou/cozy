@@ -30,9 +30,26 @@ public class FolderDao implements CommonDao<Folder> {
     }
 
     @Override
+    public Folder selectById(Context context, int id) {
+        return null;
+    }
+
+    @Override
     public void insert(Context context, Folder object) {
         ContentValues values = new ContentValues();
         values.put(FolderContract.FolderDB.COLUMN_NAME, object.getName());
         CozyNoteHelper.getInstance(context).getReadableDatabase().insert(FolderContract.FolderDB.TABLE_NAME, null, values);
+    }
+
+    @Override
+    public void update(Context context, Folder object) {
+        ContentValues values = new ContentValues();
+        values.put(FolderContract.FolderDB.COLUMN_NAME, object.getName());
+        CozyNoteHelper.getInstance(context).getReadableDatabase().update(FolderContract.FolderDB.TABLE_NAME, values, FolderContract.FolderDB.COLUMN_ID + "=?", new String[]{String.valueOf(object.getId())});
+    }
+
+    @Override
+    public void delete(Context context, int id) {
+        CozyNoteHelper.getInstance(context).getReadableDatabase().delete(FolderContract.FolderDB.TABLE_NAME, FolderContract.FolderDB.COLUMN_ID + "=?", new String[]{String.valueOf(id)});
     }
 }

@@ -39,6 +39,20 @@ public class NoteDao implements CommonDao<Note> {
         CozyNoteHelper.getInstance(context).getReadableDatabase().insert(NoteContract.NoteDB.TABLE_NAME, null, values);
     }
 
+    @Override
+    public void update(Context context, Note object) {
+        ContentValues values = new ContentValues();
+        values.put(NoteContract.NoteDB.COLUMN_NAME, object.getName());
+        values.put(NoteContract.NoteDB.COLUMN_CONTENT, object.getContent());
+        values.put(NoteContract.NoteDB.COLUMN_FOLDER, object.getFolder());
+        CozyNoteHelper.getInstance(context).getReadableDatabase().update(NoteContract.NoteDB.TABLE_NAME, values, NoteContract.NoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(object.getId())});
+    }
+
+    @Override
+    public void delete(Context context, int id) {
+        CozyNoteHelper.getInstance(context).getReadableDatabase().delete(NoteContract.NoteDB.TABLE_NAME, NoteContract.NoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+    }
+
     public List<Explorer> selectExplorer(Context context,String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
     {
         String[] columns = {

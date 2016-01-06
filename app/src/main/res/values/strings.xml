@@ -10,4 +10,5 @@
     <string name="title_activity_new_mark">NoteActivity</string>
     <string name="title_activity_edit_note">EditNoteActivity</string>
     <string name="addButton">Add</string>
+    <string name="manageFolders">Manage folders</string>
 </resources>
