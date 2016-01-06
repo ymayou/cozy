@@ -206,7 +206,7 @@ public class NavActivity extends AppCompatActivity
 
         for (Folder f : foldersList)
         {
-            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName()).setIcon(R.drawable.common_ic_googleplayservices).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName()).setIcon(R.drawable.ic_folder_white).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     if (selectedItem != null)
@@ -220,7 +220,7 @@ public class NavActivity extends AppCompatActivity
 
         }
         // manage Folders
-        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders").setIcon(R.drawable.ic_settings_black).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
