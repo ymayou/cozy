@@ -26,8 +26,6 @@
         android:layout_centerHorizontal="@+id/checkBox1"
         android:layout_toRightOf="@+id/checkBox1"
         android:layout_below="@+id/findSelected"
-        android:hint="New element"
-        android:inputType="textMultiLine"
-        android:lines="2" />
+        android:hint="New element" />
 
 </RelativeLayout>
