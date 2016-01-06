@@ -15,7 +15,7 @@ public class RestClient {
 
     OkHttpClient client = new OkHttpClient();
 
-    String post(String url, String json, String user, String password) throws IOException {
+    Response post(String url, String json, String user, String password) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
         Request.Builder builder = new Request.Builder()
                 .url(url)
@@ -28,10 +28,10 @@ public class RestClient {
         }
         Request request = builder.build();
         Response response = client.newCall(request).execute();
-        return response.body().string();
+        return response;
     }
 
-    String get(String url, String user, String password) throws IOException {
+    Response get(String url, String user, String password) throws IOException {
         Request.Builder builder = new Request.Builder()
                 .url(url)
                 .addHeader("{Content-Type", "application/json}")
@@ -42,6 +42,38 @@ public class RestClient {
         }
         Request request = builder.build();
         Response response = client.newCall(request).execute();
-        return response.body().string();
+        return response;
+    }
+
+
+    Response delete(String url, String user, String password) throws IOException {
+        Request.Builder builder = new Request.Builder()
+                .url(url)
+                .addHeader("{Content-Type", "application/json}")
+                .addHeader("Accept", "*/*")
+                .delete();
+        if (password != null && password.length() > 0) {
+            String credential = Credentials.basic(user, password);
+            builder.header("Authorization", credential);
+        }
+        Request request = builder.build();
+        Response response = client.newCall(request).execute();
+        return response;
+    }
+
+    Response put(String url, String json, String user, String password) throws IOException {
+        RequestBody body = RequestBody.create(JSON, json);
+        Request.Builder builder = new Request.Builder()
+                .url(url)
+                .addHeader("{Content-Type", "application/json}")
+                .addHeader("Accept", "*/*")
+                .put(body);
+        if (password != null && password.length() > 0) {
+            String credential = Credentials.basic(user, password);
+            builder.header("Authorization", credential);
+        }
+        Request request = builder.build();
+        Response response = client.newCall(request).execute();
+        return response;
     }
 }

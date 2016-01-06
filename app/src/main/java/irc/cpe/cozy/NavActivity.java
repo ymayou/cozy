@@ -67,7 +67,7 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         menu = navigationView.getMenu();
-        menu.clear();
+        //menu.set
         updateMenu();
 
         noteDao = new NoteDao();
@@ -133,16 +133,20 @@ public class NavActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id == 0)
-        {
-            // manage folders
-            Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
-            startActivity(manage);
+        switch (id){
+            case R.id.main:
+                reloadExplorer(0);
+                break;
+            case R.id.connexion:
+                break;
+            default:
+                break;
         }
-        else
-        {
-            reloadExplorer(id);
-        }
+
+        if (selectedItem != null)
+            selectedItem.setChecked(false);
+        item.setChecked(true);
+        selectedItem = item;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -179,17 +183,19 @@ public class NavActivity extends AppCompatActivity
                 null
         );
 
-        adapter.clear();
+        adapter .clear();
         adapter.addAll(explorers);
         adapter.notifyDataSetChanged();
     }
 
     private void updateMenu()
     {
-        menu.clear();
+        MenuItem itemFolder = menu.findItem(0);
+        if(itemFolder != null)
+            menu.removeItem(0);
+
         SubMenu sub = menu.addSubMenu(Menu.NONE, 0, 0, "Folders");
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
         FolderDao dao = new FolderDao();
 
         String[] columns = {
@@ -211,10 +217,28 @@ public class NavActivity extends AppCompatActivity
 
         for (Folder f : foldersList)
         {
-            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName());
+            sub.add(Menu.NONE, f.getId(), f.getId(), f.getName()).setIcon(R.drawable.common_ic_googleplayservices).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (selectedItem != null)
+                        selectedItem.setChecked(false);
+                    item.setChecked(true);
+                    selectedItem = item;
+                    reloadExplorer(item.getItemId());
+                    return onNavigationItemSelected(item);
+                }
+            });
+
         }
         // manage Folders
-        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders");
+        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
+                startActivity(manage);
+                return onNavigationItemSelected(item);
+            }
+        });
     }
 
 }
