@@ -60,4 +60,20 @@ public class RestClient {
         Response response = client.newCall(request).execute();
         return response;
     }
+
+    Response put(String url, String json, String user, String password) throws IOException {
+        RequestBody body = RequestBody.create(JSON, json);
+        Request.Builder builder = new Request.Builder()
+                .url(url)
+                .addHeader("{Content-Type", "application/json}")
+                .addHeader("Accept", "*/*")
+                .put(body);
+        if (password != null && password.length() > 0) {
+            String credential = Credentials.basic(user, password);
+            builder.header("Authorization", credential);
+        }
+        Request request = builder.build();
+        Response response = client.newCall(request).execute();
+        return response;
+    }
 }

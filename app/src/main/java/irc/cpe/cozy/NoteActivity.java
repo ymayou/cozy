@@ -1,5 +1,6 @@
 package irc.cpe.cozy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,30 +20,25 @@ public class NoteActivity extends AppCompatActivity{
         setContentView(R.layout.activity_note);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         //RadioButton bold = (RadioButton)findViewById(R.id.noteBold);
+
         //Récupération de l'id de la note à modifier
         int idNote=-1;
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             idNote = extras.getInt("NOTE");
         }
-        /*
-        String test = Integer.toString(extras.getInt("NOTE"));
-        Toast.makeText(getApplicationContext(), "ID : '"+ test + "'",
-                Toast.LENGTH_LONG).show();*/
 
         EditText textTitle=(EditText)findViewById(R.id.noteTitle);
         EditText textContent=(EditText)findViewById(R.id.noteContent);
 
         if (idNote > -1){
             NoteDao noteDao = new NoteDao();
-            //Note noteChanged = new Note();
             //Récupération du contenu note en base et insertion valeurs dans editText
             Note noteChanged = noteDao.selectById(getApplicationContext(), idNote);
             textTitle.setText(noteChanged.getName());
             textContent.setText(noteChanged.getContent());
-            Toast.makeText(getApplicationContext(), "Contenu de la note récupérée : '"+ noteChanged.getContent() +"'",
-                    Toast.LENGTH_LONG).show();
         }
 
         Button noteButton=(Button)findViewById(R.id.noteButton);
@@ -60,8 +56,10 @@ public class NoteActivity extends AppCompatActivity{
                     NoteDao noteDao = new NoteDao();
                     Note newNote = new Note(finalId, newTitle, newContent, 0);
                     noteDao.update(getApplicationContext(), newNote);
-                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée, Contenu : " + newContent,
+                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
                             Toast.LENGTH_LONG).show();
+                    Intent returnIntent = new Intent();
+                    setResult(NoteActivity.RESULT_OK, returnIntent);
                     finish();
                 }else{
                     Note newNote = new Note(newTitle, newContent, 0);
@@ -70,6 +68,8 @@ public class NoteActivity extends AppCompatActivity{
                     noteDao.insert(getApplicationContext(), newNote);
                     Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée, Contenu : " + newContent,
                             Toast.LENGTH_LONG).show();
+                    Intent returnIntent = new Intent();
+                    setResult(NoteActivity.RESULT_OK, returnIntent);
                     finish();
                 }
                 /*
@@ -102,6 +102,8 @@ public class NoteActivity extends AppCompatActivity{
             public void onClick(View arg0) {
                 Toast.makeText(getApplicationContext(), "Note non sauvegardée",
                         Toast.LENGTH_LONG).show();
+                Intent returnIntent = new Intent();
+                setResult(NoteActivity.RESULT_CANCELED, returnIntent);
                 finish();
             }
         });
@@ -114,6 +116,8 @@ public class NoteActivity extends AppCompatActivity{
                 noteDao.delete(getApplicationContext(), finalId);
                 Toast.makeText(getApplicationContext(), "Note "+finalTitle+" supprimée",
                         Toast.LENGTH_LONG).show();
+                Intent returnIntent = new Intent();
+                setResult(NoteActivity.RESULT_OK, returnIntent);
                 finish();
             }
         });

@@ -35,7 +35,6 @@ public class NavActivity extends AppCompatActivity
     private List<Explorer> explorers;
     private NoteDao noteDao;
     private ExplorerAdapter adapter;
-    private MenuItem selectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +48,11 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //Mettre l'activité en startActivityForResult
-
-                NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
+                
+                //NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
                 //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
-                /*Intent i = new Intent(view.getContext(), NoteActivity.class);
-                startActivityForResult(i, 1);*/
+                Intent i = new Intent(view.getContext(), NoteActivity.class);
+                startActivityForResult(i, 1);
             }
         });
 
@@ -91,7 +90,7 @@ public class NavActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent editNote = new Intent(view.getContext(), NoteActivity.class);
                 editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
-                startActivity(editNote);
+                startActivityForResult(editNote, 1);
             }
         });
 
@@ -160,6 +159,18 @@ public class NavActivity extends AppCompatActivity
         super.onResume();
         updateMenu();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == NoteActivity.RESULT_OK){
+                reloadExplorer(0);
+            }
+            if (resultCode == NoteActivity.RESULT_CANCELED) {
+                //In case of cancellation
+            }
+        }
+    }//onActivityResult
 
     private void reloadExplorer(int idFolder)
     {

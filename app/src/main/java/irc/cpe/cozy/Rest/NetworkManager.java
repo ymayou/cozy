@@ -23,15 +23,34 @@ public class NetworkManager {
         if (isConnectedToInternet(context)) {
             CozyClient cozyClient = new CozyClient(context);
             boolean success = cozyClient.addDevice();
-            System.out.println("[DEBUG] Device added successfully");
             if (success) {
+                System.out.println("[DEBUG] Device added successfully");
+
                 String data = null;
                 String documentId = cozyClient.createDocument("{\"text\": \"This is my document!\"}");
+
                 String document = cozyClient.getDocument(documentId);
                 lt.notesChanged(document);
-                boolean deletion = cozyClient.deleteDocument(documentId);
-                System.out.println("[DEBUG] Document deletion result: " + deletion);
 
+                boolean update = cozyClient.updateDocument(documentId, "{\"text\": \"This is my updated document!\"}");
+                if (update) {
+                    System.out.println("[DEBUG] Document updated successfully");
+                } else {
+                    System.out.println("[DEBUG] Document NOT updated successfully");
+                }
+
+                document = cozyClient.getDocument(documentId);
+                lt.notesChanged(document);
+
+                boolean deletion = cozyClient.deleteDocument(documentId);
+                if (deletion) {
+                    System.out.println("[DEBUG] Document deleted successfully");
+                } else {
+                    System.out.println("[DEBUG] Document NOT deleted successfully");
+                }
+
+                cozyClient.removeDevice();
+                System.out.println("[DEBUG] Device removed successfully");
             }
         }
     }

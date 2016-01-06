@@ -150,9 +150,41 @@ public class CozyClient {
         return result;
     }
 
-    public boolean updateDocument() {
-        return false;
+    public boolean updateDocument(String documentId, String document) {
+        boolean result = false;
+        RestClient client = new RestClient();
+        SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
+        String password = settings.getString("cozy_device_password", null);
+        String username = settings.getString("android_device_id", null);
+        try {
+            // TODO : replace URL (using app settings)
+            Response response = client.put("https://gustiaux.cozycloud.cc/ds-api/data/" + documentId + "/",
+                    document,
+                    username,
+                    password);
+            System.out.println("[DEBUG] Cozy API response");
+            if (response.code() == 200) {
+                result = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
-
+    public void removeDevice() {
+        String password = "teddygustiaux";
+        RestClient client = new RestClient();
+        SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
+        String device = settings.getString("android_device_id", null);
+        try {
+            // TODO : replace URL (using app settings)
+            client.delete("https://gustiaux.cozycloud.cc/device/" + device,
+                    "owner",
+                    password);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
