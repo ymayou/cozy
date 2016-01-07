@@ -49,7 +49,7 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //Mettre l'activité en startActivityForResult
-                
+
                 //NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
                 //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
                 Intent i = new Intent(view.getContext(), NoteActivity.class);
@@ -170,6 +170,7 @@ public class NavActivity extends AppCompatActivity
     {
         super.onResume();
         updateMenu();
+
     }
 
     @Override
