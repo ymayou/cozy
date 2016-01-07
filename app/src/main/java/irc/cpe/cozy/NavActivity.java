@@ -130,6 +130,8 @@ public class NavActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settings = new Intent(this.getApplicationContext(), SettingsActivity.class);
+            startActivity(settings);
             return true;
         }
 
