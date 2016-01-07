@@ -28,7 +28,7 @@ public class WebserviceActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                NetworkManager.getInstance(WebserviceActivity.this).callCozy(lt);
+                CozyManager.getInstance(WebserviceActivity.this).callCozy(lt);
             }
         }
         ).start();

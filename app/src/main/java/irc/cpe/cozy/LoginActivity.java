@@ -28,9 +28,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import irc.cpe.cozy.Rest.CozyClient;
+import irc.cpe.cozy.Rest.CozyManager;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -191,12 +195,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("http");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
@@ -306,25 +308,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+            CozyManager cozyManager = CozyManager.getInstance(LoginActivity.this);
+            if (cozyManager.isConnectedToInternet()) {
+                CozyClient cozyClient = cozyManager.cozyClient;
+                boolean success = cozyClient.addDevice();
+                if (success) {
+                    System.out.println("[DEBUG] Device added successfully");
+                    return true;
+                } else {
+                    System.out.println("[DEBUG] Device NOT added successfully");
+                    return false;
+                }
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "You do not have an Internet connection", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
         }
 
         @Override

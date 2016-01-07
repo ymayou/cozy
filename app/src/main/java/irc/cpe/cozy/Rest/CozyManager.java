@@ -4,23 +4,25 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class NetworkManager {
+public class CozyManager {
 
-    private static NetworkManager manager = null;
+    private static CozyManager manager = null;
     private Context context = null;
+    public CozyClient cozyClient = null;
 
-    private NetworkManager(Context context) {
+    private CozyManager(Context context) {
+        this.cozyClient = new CozyClient(context);
         this.context = context;
     }
 
-    public static NetworkManager getInstance(Context context) {
+    public static CozyManager getInstance(Context context) {
         if (manager == null)
-            manager = new NetworkManager(context);
+            manager = new CozyManager(context);
         return manager;
     }
 
     public void callCozy(WebserviceListener lt) {
-        if (isConnectedToInternet(context)) {
+        if (isConnectedToInternet()) {
             CozyClient cozyClient = new CozyClient(context);
             boolean success = cozyClient.addDevice();
             if (success) {
@@ -55,7 +57,7 @@ public class NetworkManager {
         }
     }
 
-    private boolean isConnectedToInternet(Context context) {
+    public boolean isConnectedToInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null) {
