@@ -21,7 +21,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:clickable="true"
-        android:onClick="toggleSync" />
+        android:onClick="toggleSync"
+        android:textSize="14dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
