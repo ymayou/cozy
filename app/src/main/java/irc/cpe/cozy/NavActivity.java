@@ -199,6 +199,11 @@ public class NavActivity extends AppCompatActivity
         adapter .clear();
         adapter.addAll(explorers);
         adapter.notifyDataSetChanged();
+        if (selectedItem != null)
+            selectedItem.setChecked(false);
+        MenuItem item = menu.getItem(idFolder);
+        item.setChecked(true);
+        selectedItem = item;
     }
 
     private void updateMenu()
@@ -244,7 +249,7 @@ public class NavActivity extends AppCompatActivity
 
         }
         // manage Folders
-        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders").setIcon(R.drawable.ic_settings_black).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        sub.add(Menu.NONE, 0, foldersList.size() + 1, "Manage folders").setIcon(R.drawable.ic_settings_black).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
