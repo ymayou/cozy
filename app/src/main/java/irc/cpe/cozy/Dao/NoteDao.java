@@ -65,7 +65,7 @@ public class NoteDao implements CommonDao<Note> {
         notes.moveToFirst();
         while (!notes.isAfterLast())
         {
-            explorers.add(new Explorer(Integer.parseInt(notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_ID))), notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_NAME))));
+            explorers.add(new Explorer(Integer.parseInt(notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_ID))), notes.getString(notes.getColumnIndex(NoteContract.NoteDB.COLUMN_NAME)), Note.class));
             notes.moveToNext();
         }
         notes.close();

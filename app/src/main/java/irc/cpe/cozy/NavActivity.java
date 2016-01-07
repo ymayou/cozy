@@ -22,8 +22,10 @@ import java.util.List;
 import irc.cpe.cozy.Adapter.ExplorerAdapter;
 import irc.cpe.cozy.Contract.FolderContract;
 import irc.cpe.cozy.Contract.NoteContract;
+import irc.cpe.cozy.Contract.TaskNoteContract;
 import irc.cpe.cozy.Dao.FolderDao;
 import irc.cpe.cozy.Dao.NoteDao;
+import irc.cpe.cozy.Dao.TaskNoteDao;
 import irc.cpe.cozy.Model.Explorer;
 import irc.cpe.cozy.Model.Folder;
 
@@ -37,6 +39,7 @@ public class NavActivity extends AppCompatActivity
     private Menu menu;
     private List<Explorer> explorers;
     private NoteDao noteDao;
+    private TaskNoteDao taskNoteDao;
     private ExplorerAdapter adapter;
     private MenuItem selectedItem;
 
@@ -77,25 +80,18 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         menu = navigationView.getMenu();
-        //menu.set
         updateMenu();
 
         noteDao = new NoteDao();
-        explorers = noteDao.selectExplorer(this.getApplicationContext(),
-                null, // columns for the where
-                null, // where
-                null, // group rows
-                null, // filter by group rows
-                null,
-                null
-        );
-
+        taskNoteDao = new TaskNoteDao();
+        explorers = new ArrayList<>();
         adapter = new ExplorerAdapter(this, R.layout.explorer, explorers);
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        reloadExplorer(0);
 
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent editNote = new Intent(view.getContext(), NoteActivity.class);
@@ -187,23 +183,24 @@ public class NavActivity extends AppCompatActivity
 
     private void reloadExplorer(int idFolder)
     {
-        explorers = noteDao.selectExplorer(this.getApplicationContext(),
+        explorers.clear();
+        explorers.addAll(noteDao.selectExplorer(this.getApplicationContext(),
                 NoteContract.NoteDB.COLUMN_FOLDER + "=?", // columns for the where
                 new String[]{String.valueOf(idFolder)}, // where
                 null, // group rows
                 null, // filter by group rows
                 null,
                 null
-        );
-
-        adapter .clear();
-        adapter.addAll(explorers);
+        ));
+        explorers.addAll(taskNoteDao.selectExplorer(this.getApplicationContext(),
+                TaskNoteContract.TaskNoteDB.COLUMN_FOLDER + "=?", // columns for the where
+                new String[]{String.valueOf(idFolder)}, // where
+                null, // group rows
+                null, // filter by group rows
+                null,
+                null
+        ));
         adapter.notifyDataSetChanged();
-        if (selectedItem != null)
-            selectedItem.setChecked(false);
-        MenuItem item = menu.getItem(idFolder);
-        item.setChecked(true);
-        selectedItem = item;
     }
 
     private void updateMenu()

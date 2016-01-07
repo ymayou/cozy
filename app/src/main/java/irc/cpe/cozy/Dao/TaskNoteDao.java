@@ -10,6 +10,7 @@ import java.util.List;
 import irc.cpe.cozy.Contract.CozyNoteHelper;
 import irc.cpe.cozy.Contract.NoteTaskNoteContract;
 import irc.cpe.cozy.Contract.TaskNoteContract;
+import irc.cpe.cozy.Model.Explorer;
 import irc.cpe.cozy.Model.Task;
 import irc.cpe.cozy.Model.TaskNote;
 
@@ -83,5 +84,24 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
     @Override
     public void delete(Context context, int id) {
         CozyNoteHelper.getInstance(context).getReadableDatabase().delete(TaskNoteContract.TaskNoteDB.TABLE_NAME, TaskNoteContract.TaskNoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+    }
+
+    public List<Explorer> selectExplorer(Context context,String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
+    {
+        String[] columns = {
+                TaskNoteContract.TaskNoteDB.COLUMN_ID,
+                TaskNoteContract.TaskNoteDB.COLUMN_NAME
+        };
+
+        Cursor checkList  = CozyNoteHelper.getInstance(context).getReadableDatabase().query(TaskNoteContract.TaskNoteDB.TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+        List<Explorer> explorers = new ArrayList<>();
+        checkList.moveToFirst();
+        while (!checkList.isAfterLast())
+        {
+            explorers.add(new Explorer(Integer.parseInt(checkList.getString(checkList.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_ID))), checkList.getString(checkList.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_NAME)), TaskNote.class));
+            checkList.moveToNext();
+        }
+        checkList.close();
+        return explorers;
     }
 }
