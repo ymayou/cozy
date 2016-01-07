@@ -15,7 +15,7 @@
         android:layout_gravity="center_horizontal" />
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="Cozy Note"
+        android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="@dimen/appTitle"
         android:gravity="center_horizontal" />
