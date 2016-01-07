@@ -25,4 +25,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings related to Cozy sync -->
+    <string name="local_service_started">Local Cozy Notes sync service has started</string>
+    <string name="local_service_stopped">Local Cozy Notes sync service has stopped</string>
+    <string name="local_service_label">Cozy Notes Sync Service</string>
+    <string name="local_service_connected">Cozy Notes Sync Service is connected</string>
+    <string name="local_service_disconnected">Cozy Notes Sync Service is disconnected</string>
 </resources>
