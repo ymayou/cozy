@@ -36,7 +36,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Validate"
+        android:text="Save"
         android:id="@+id/noteButton"
         android:layout_marginBottom="51dp"
         android:layout_alignParentBottom="true"
@@ -50,40 +50,4 @@
         android:layout_alignTop="@+id/noteButton"
         android:layout_toStartOf="@+id/noteButton" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Color"
-        android:id="@+id/noteColor"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/noteCancel" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Text size"
-        android:id="@+id/noteSize"
-        android:layout_alignTop="@+id/noteColor"
-        android:layout_toStartOf="@+id/noteColor" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bold"
-        android:id="@+id/noteBold"
-        android:checked="false"
-        android:layout_alignBottom="@+id/noteSize"
-        android:layout_toStartOf="@+id/noteSize"
-        android:layout_marginEnd="39dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:id="@+id/noteDelete"
-        android:layout_alignBottom="@+id/noteCancel"
-        android:layout_alignParentStart="true"
-        android:onClick="deleteNote" />
 </RelativeLayout>
