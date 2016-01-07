@@ -1,5 +1,7 @@
 package irc.cpe.cozy;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -99,6 +101,32 @@ public class NavActivity extends AppCompatActivity
                 Intent editNote = new Intent(view.getContext(), NoteActivity.class);
                 editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
                 startActivityForResult(editNote, NOTE_EDITED);
+            }
+        });
+
+        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int position, long arg3) {
+                final int pos = position;
+                new AlertDialog.Builder(NavActivity.this)
+                        .setTitle("Delete")
+                        .setMessage("Confirm?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                NoteDao noteDao = new NoteDao();
+                                noteDao.delete(getApplicationContext(), ((Explorer) grid.getItemAtPosition(pos)).getId());
+                                reloadExplorer(0);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Cancel does nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return true;
             }
         });
 
@@ -266,5 +294,8 @@ public class NavActivity extends AppCompatActivity
             }
         });
     }
+
+
+
 
 }
