@@ -26,6 +26,7 @@ public class LocalService extends Service {
      */
     public class LocalBinder extends Binder {
         public LocalService getService() {
+            System.out.println("[DEBUG] Service Binder Called");
             return LocalService.this;
         }
     }
@@ -33,7 +34,8 @@ public class LocalService extends Service {
     @Override
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
+        Toast.makeText(getApplicationContext(), "Service created", Toast.LENGTH_SHORT).show();
+        System.out.println("[DEBUG] Service created");
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
     }
@@ -86,5 +88,9 @@ public class LocalService extends Service {
 
         // Send the notification.
         mNM.notify(NOTIFICATION, notification);
+    }
+
+    public void test() {
+        Toast.makeText(getApplicationContext(), "Test caelled", Toast.LENGTH_SHORT).show();
     }
 }

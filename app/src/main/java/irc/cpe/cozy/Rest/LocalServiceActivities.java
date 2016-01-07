@@ -2,6 +2,7 @@ package irc.cpe.cozy.Rest;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 
 public class LocalServiceActivities {
@@ -18,6 +19,8 @@ public class LocalServiceActivities {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            System.out.println("[DEBUG] Controller called");
+            Toast.makeText(getApplicationContext(), "Controller called", Toast.LENGTH_SHORT).show();
         }
     }
 }

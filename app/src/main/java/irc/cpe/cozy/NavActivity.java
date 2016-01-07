@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.renderscript.ScriptGroup;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -54,6 +55,7 @@ public class NavActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        doBindService();
         setContentView(R.layout.activity_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -109,6 +111,15 @@ public class NavActivity extends AppCompatActivity
         });
 
         doBindService();
+        if (mIsBound) {
+            System.out.println("[DEBUG] Service bound");
+        } else {
+            System.out.println("[DEBUG] Service NOT bound");
+        }
+        if (mBoundService == null) {
+            System.out.println("[DEBUG] ERROR");
+        }
+        //mBoundService.test();
     }
 
     @Override
@@ -153,6 +164,7 @@ public class NavActivity extends AppCompatActivity
                 reloadExplorer(0);
                 break;
             case R.id.connexion:
+                mBoundService.test();
                 Intent login = new Intent(this.getApplicationContext(), LoginActivity.class);
                 startActivityForResult(login, LOGIN_RESULT_ACT);
                 break;
@@ -272,8 +284,11 @@ public class NavActivity extends AppCompatActivity
         });
     }
 
+    /** ==========================
+     * SERVICE
+     * ==========================
+     */
 
-    /** Flag indicating whether we have called bind on the service. */
     boolean mIsBound;
 
     private LocalService mBoundService;
@@ -288,7 +303,7 @@ public class NavActivity extends AppCompatActivity
             mBoundService = ((LocalService.LocalBinder)service).getService();
 
             // Tell the user about this for our demo.
-            Toast.makeText(NavActivity.this, R.string.local_service_connected,
+            Toast.makeText(getApplicationContext(), R.string.local_service_connected,
                     Toast.LENGTH_SHORT).show();
         }
 
@@ -298,7 +313,7 @@ public class NavActivity extends AppCompatActivity
             // Because it is running in our same process, we should never
             // see this happen.
             mBoundService = null;
-            Toast.makeText(NavActivity.this, R.string.local_service_disconnected,
+            Toast.makeText(getApplicationContext(), R.string.local_service_disconnected,
                     Toast.LENGTH_SHORT).show();
         }
     };
@@ -308,8 +323,9 @@ public class NavActivity extends AppCompatActivity
         // class name because we want a specific service implementation that
         // we know will be running in our own process (and thus won't be
         // supporting component replacement by other applications).
-        bindService(new Intent(NavActivity.this,
-                LocalService.class), mConnection, Context.BIND_AUTO_CREATE);
+        Intent i = new Intent(this, LocalService.class);
+        bindService(i, mConnection, Context.BIND_AUTO_CREATE);
+        startService(i);
         mIsBound = true;
     }
 
@@ -326,5 +342,7 @@ public class NavActivity extends AppCompatActivity
         super.onDestroy();
         doUnbindService();
     }
+
+    /** ========================== **/
 
 }
