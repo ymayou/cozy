@@ -25,6 +25,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_note">NoteActivity</string>
     <string name="lblSync">Cozy Cloud synchronization</string>
     <string name="lblWarning">Warning</string>
     <string name="title_activity_settings">Settings</string>
