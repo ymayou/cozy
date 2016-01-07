@@ -30,15 +30,17 @@ import irc.cpe.cozy.Model.Folder;
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
+    // Activity results
+    static final int NOTE_EDITED = 1;
+    public static final int LOGIN_RESULT_ACT = 700;
+    public static final int LOGIN_RESULT_OK = 701;
+
     private List<Folder> foldersList = new ArrayList<>();
     private Menu menu;
     private List<Explorer> explorers;
     private NoteDao noteDao;
     private ExplorerAdapter adapter;
     private MenuItem selectedItem;
-    public static final int LOGIN_RESULT_ACT = 700;
-    public static final int LOGIN_RESULT_OK = 701;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +53,9 @@ public class NavActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Mettre l'activité en startActivityForResult
-                
-                //NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
-                //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
-                Intent i = new Intent(view.getContext(), NoteActivity.class);
-                startActivityForResult(i, 1);
+                Intent noteActi = new Intent(view.getContext(), NoteActivity.class);
+                noteActi.putExtra("FOLDER", (selectedItem != null) ? selectedItem.getItemId() : 0);
+                startActivityForResult(noteActi, NOTE_EDITED);
             }
         });
 
@@ -103,7 +102,7 @@ public class NavActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent editNote = new Intent(view.getContext(), NoteActivity.class);
                 editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
-                startActivityForResult(editNote, 1);
+                startActivityForResult(editNote, NOTE_EDITED);
             }
         });
 
@@ -169,26 +168,29 @@ public class NavActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
         updateMenu();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            if(resultCode == NoteActivity.RESULT_OK){
-                reloadExplorer(0);
-            }
-            if (resultCode == NoteActivity.RESULT_CANCELED) {
-                //In case of cancellation
-            }
-        }
-        if (requestCode == LOGIN_RESULT_ACT) {
-            if (resultCode == LOGIN_RESULT_OK) {
-                selectedItem.setVisible(false);
-                reloadExplorer(0);
-            }
+        switch (requestCode){
+            case NOTE_EDITED:
+                if(resultCode == NoteActivity.RESULT_OK){
+                    reloadExplorer(0);
+                }
+                if (resultCode == NoteActivity.RESULT_CANCELED) {
+                    //In case of cancellation
+                }
+                break;
+            case LOGIN_RESULT_ACT:
+                if (resultCode == LOGIN_RESULT_OK) {
+                    selectedItem.setVisible(false);
+                    reloadExplorer(0);
+                }
+                break;
         }
     }//onActivityResult
 
@@ -206,6 +208,11 @@ public class NavActivity extends AppCompatActivity
         adapter .clear();
         adapter.addAll(explorers);
         adapter.notifyDataSetChanged();
+        if (selectedItem != null)
+            selectedItem.setChecked(false);
+        MenuItem item = menu.getItem(idFolder);
+        item.setChecked(true);
+        selectedItem = item;
     }
 
     private void updateMenu()
@@ -251,7 +258,7 @@ public class NavActivity extends AppCompatActivity
 
         }
         // manage Folders
-        sub.add(Menu.NONE, 0, foldersList.size(), "Manage folders").setIcon(R.drawable.ic_settings_black).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        sub.add(Menu.NONE, 0, foldersList.size() + 1, "Manage folders").setIcon(R.drawable.ic_settings_black).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent manage = new Intent(getApplicationContext(), ManageFoldersActivity.class);
