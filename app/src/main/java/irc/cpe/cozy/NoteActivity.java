@@ -24,13 +24,17 @@ public class NoteActivity extends AppCompatActivity{
         //RadioButton bold = (RadioButton)findViewById(R.id.noteBold);
 
         //Récupération de l'id de la note à modifier
-        int idNote=-1;
-        int idFolder=-1;
-        Bundle extras = getIntent().getExtras();
+        int idNote;
+        int idFolder;
+        /*Bundle extras = getIntent().getExtras();
+
         if (extras != null) {
             idNote = extras.getInt("NOTE");
             idFolder = extras.getInt("FOLDER");
-        }
+        }*/
+
+        idNote = getIntent().getIntExtra("NOTE", 0);
+        idFolder = getIntent().getIntExtra("FOLDER", 0);
 
         Toast.makeText(getApplicationContext(), "Id folder = '"+ idFolder + "'",
                 Toast.LENGTH_LONG).show();
@@ -38,7 +42,7 @@ public class NoteActivity extends AppCompatActivity{
         EditText textTitle=(EditText)findViewById(R.id.noteTitle);
         EditText textContent=(EditText)findViewById(R.id.noteContent);
 
-        if (idNote > -1){
+        if (idNote > 0){
             NoteDao noteDao = new NoteDao();
             //Récupération du contenu note en base et insertion valeurs dans editText
             Note noteChanged = noteDao.selectById(getApplicationContext(), idNote);
@@ -57,7 +61,7 @@ public class NoteActivity extends AppCompatActivity{
                 EditText newTextContent=(EditText)findViewById(R.id.noteContent);
                 String newTitle = newTextTitle.getText().toString();
                 String newContent = newTextContent.getText().toString();
-                if(finalIdNote >-1){
+                if(finalIdNote >0){
                     //Modification de la note existante
                     NoteDao noteDao = new NoteDao();
                     Note editNote = new Note(finalIdNote, newTitle, newContent, finalIdFolder);
@@ -131,4 +135,5 @@ public class NoteActivity extends AppCompatActivity{
         //Intent newIntent = new Intent(getApplicationContext(), WebserviceActivity.class);
         //startActivity(newIntent);
     }
+
 }

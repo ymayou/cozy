@@ -30,7 +30,7 @@ import irc.cpe.cozy.Model.Folder;
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    // Activity results
+    //Activity results
     static final int NOTE_EDITED = 1;
     public static final int LOGIN_RESULT_ACT = 700;
     public static final int LOGIN_RESULT_OK = 701;
