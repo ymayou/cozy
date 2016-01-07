@@ -20,7 +20,7 @@ public class NoteActivity extends AppCompatActivity{
         setContentView(R.layout.activity_note);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Récupération de l'id de la note à modifier
         int idNote;
         int idFolder;
