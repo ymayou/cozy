@@ -24,16 +24,25 @@ public class NoteActivity extends AppCompatActivity{
         //RadioButton bold = (RadioButton)findViewById(R.id.noteBold);
 
         //Récupération de l'id de la note à modifier
-        int idNote=-1;
-        Bundle extras = getIntent().getExtras();
+        int idNote;
+        int idFolder;
+        /*Bundle extras = getIntent().getExtras();
+
         if (extras != null) {
             idNote = extras.getInt("NOTE");
-        }
+            idFolder = extras.getInt("FOLDER");
+        }*/
+
+        idNote = getIntent().getIntExtra("NOTE", 0);
+        idFolder = getIntent().getIntExtra("FOLDER", 0);
+
+        Toast.makeText(getApplicationContext(), "Id folder = '"+ idFolder + "'",
+                Toast.LENGTH_LONG).show();
 
         EditText textTitle=(EditText)findViewById(R.id.noteTitle);
         EditText textContent=(EditText)findViewById(R.id.noteContent);
 
-        if (idNote > -1){
+        if (idNote > 0){
             NoteDao noteDao = new NoteDao();
             //Récupération du contenu note en base et insertion valeurs dans editText
             Note noteChanged = noteDao.selectById(getApplicationContext(), idNote);
@@ -42,7 +51,8 @@ public class NoteActivity extends AppCompatActivity{
         }
 
         Button noteButton=(Button)findViewById(R.id.noteButton);
-        final int finalId = idNote;
+        final int finalIdNote = idNote;
+        final int finalIdFolder = idFolder;
         final String finalTitle = textTitle.getText().toString();
         noteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,18 +61,18 @@ public class NoteActivity extends AppCompatActivity{
                 EditText newTextContent=(EditText)findViewById(R.id.noteContent);
                 String newTitle = newTextTitle.getText().toString();
                 String newContent = newTextContent.getText().toString();
-                if(finalId >-1){
+                if(finalIdNote >0){
                     //Modification de la note existante
                     NoteDao noteDao = new NoteDao();
-                    Note newNote = new Note(finalId, newTitle, newContent, 0);
-                    noteDao.update(getApplicationContext(), newNote);
+                    Note editNote = new Note(finalIdNote, newTitle, newContent, finalIdFolder);
+                    noteDao.update(getApplicationContext(), editNote);
                     Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
                             Toast.LENGTH_LONG).show();
                     Intent returnIntent = new Intent();
                     setResult(NoteActivity.RESULT_OK, returnIntent);
                     finish();
                 }else{
-                    Note newNote = new Note(newTitle, newContent, 0);
+                    Note newNote = new Note(newTitle, newContent, finalIdFolder);
                     //Insertion de la nouvelle note
                     NoteDao noteDao = new NoteDao();
                     noteDao.insert(getApplicationContext(), newNote);
@@ -113,7 +123,7 @@ public class NoteActivity extends AppCompatActivity{
             @Override
             public void onClick(View arg0) {
                 NoteDao noteDao = new NoteDao();
-                noteDao.delete(getApplicationContext(), finalId);
+                noteDao.delete(getApplicationContext(), finalIdNote);
                 Toast.makeText(getApplicationContext(), "Note "+finalTitle+" supprimée",
                         Toast.LENGTH_LONG).show();
                 Intent returnIntent = new Intent();
@@ -125,4 +135,5 @@ public class NoteActivity extends AppCompatActivity{
         //Intent newIntent = new Intent(getApplicationContext(), WebserviceActivity.class);
         //startActivity(newIntent);
     }
+
 }
