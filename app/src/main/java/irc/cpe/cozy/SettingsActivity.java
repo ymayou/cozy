@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
         Switch toggle = (Switch) findViewById(R.id.syncToggle);
         SharedPreferences settings = view.getContext().getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("cozy_aotomatic_sync", toggle.isChecked());
+        editor.putBoolean("cozy_automatic_sync", toggle.isChecked());
         editor.apply();
     }
 
