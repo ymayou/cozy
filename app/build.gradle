@@ -17,6 +17,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICEI knw'
+    }
 }
 
 dependencies {
@@ -27,4 +34,9 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
     compile 'com.android.support:recyclerview-v7:23.1.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile (
+        [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.4.6'],
+        [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.4.6'],
+        [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.4.6']
+    )
 }

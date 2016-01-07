@@ -91,6 +91,6 @@ public class LocalService extends Service {
     }
 
     public void test() {
-        Toast.makeText(getApplicationContext(), "Test caelled", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Test called", Toast.LENGTH_SHORT).show();
     }
 }
