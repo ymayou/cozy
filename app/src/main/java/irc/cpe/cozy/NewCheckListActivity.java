@@ -20,12 +20,10 @@ import irc.cpe.cozy.Model.ListElement;
  */
 public class NewCheckListActivity extends AppCompatActivity {
     ChecklistAdapter dataAdapter = null;
-    ArrayList<ListElement> liste = new ArrayList<ListElement>();
+    ArrayList<ListElement> liste = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        final Context c = this;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_checklist);
 
