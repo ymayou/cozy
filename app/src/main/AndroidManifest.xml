@@ -37,6 +37,16 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".NavActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="irc.cpe.cozy.NavActivity" />
+        </activity>
+            android:label="@string/title_activity_login" />
+        <activity
             android:name=".NoteActivity"
             android:label="@string/title_activity_note"
             android:parentActivityName=".NavActivity"

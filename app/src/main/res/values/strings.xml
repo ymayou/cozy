@@ -26,4 +26,8 @@
         completions."
     </string>
     <string name="title_activity_note">NoteActivity</string>
+    <string name="lblSync">Cozy Cloud synchronization</string>
+    <string name="lblWarning">Warning</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="lblDisclaimer">The Cozy Cloud synchronization may happen without Wifi connection.\nIt will use your internet data!</string>
 </resources>
