@@ -5,17 +5,11 @@
     android:orientation="vertical"
     android:padding="6dip" >
 
-    <Button
-        android:id="@+id/findSelected"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Check box list" />
 
     <CheckBox
         android:id="@+id/checkBox1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/findSelected"
         android:onClick="onCheckboxClicked" />
 
     <EditText
@@ -24,8 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkBox1"
         android:layout_centerHorizontal="@+id/checkBox1"
-        android:layout_toRightOf="@+id/checkBox1"
-        android:layout_below="@+id/findSelected"
-        android:hint="New element" />
+        android:layout_toRightOf="@+id/checkBox1" />
 
 </RelativeLayout>

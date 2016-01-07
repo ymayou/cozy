@@ -1,28 +1,26 @@
 package irc.cpe.cozy.Model;
 
-import android.widget.EditText;
-
 /**
  * Created by Angèle on 04/01/2016.
  */
 
 public class ListElement {
 
-        EditText name = null;
+        String name = null;
         boolean selected = false;
 
         public ListElement(String name, boolean selected) {
             super();
-            //this.name = name;
+            this.name = name;
             this.selected = selected;
         }
 
-        /*public String getName() {
+        public String getName() {
             return name;
         }
         public void setName(String name) {
             this.name = name;
-        }*/
+        }
 
         public boolean isSelected() {
             return selected;

@@ -25,10 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".NoteActivity"
-            android:label="@string/title_activity_new_mark"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Rest.WebserviceActivity" />
         <activity
             android:name=".NewCheckListActivity"
@@ -39,6 +35,26 @@
             android:label="@string/manageFolders" />
         <activity
             android:name=".LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".NavActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="irc.cpe.cozy.NavActivity" />
+        </activity>
+        android:label="@string/title_activity_login" />
+        <activity
+            android:name=".NoteActivity"
+            android:label="@string/title_activity_note"
+            android:parentActivityName=".NavActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="irc.cpe.cozy.NavActivity" />
+        </activity>
             android:label="@string/title_activity_login"></activity>
         <service android:name=".Rest.LocalService"></service>
     </application>

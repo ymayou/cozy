@@ -20,24 +20,13 @@ public class NoteActivity extends AppCompatActivity{
         setContentView(R.layout.activity_note);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //RadioButton bold = (RadioButton)findViewById(R.id.noteBold);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Récupération de l'id de la note à modifier
         int idNote;
         int idFolder;
-        /*Bundle extras = getIntent().getExtras();
-
-        if (extras != null) {
-            idNote = extras.getInt("NOTE");
-            idFolder = extras.getInt("FOLDER");
-        }*/
 
         idNote = getIntent().getIntExtra("NOTE", 0);
         idFolder = getIntent().getIntExtra("FOLDER", 0);
-
-        Toast.makeText(getApplicationContext(), "Id folder = '"+ idFolder + "'",
-                Toast.LENGTH_LONG).show();
 
         EditText textTitle=(EditText)findViewById(R.id.noteTitle);
         EditText textContent=(EditText)findViewById(R.id.noteContent);
@@ -76,32 +65,13 @@ public class NoteActivity extends AppCompatActivity{
                     //Insertion de la nouvelle note
                     NoteDao noteDao = new NoteDao();
                     noteDao.insert(getApplicationContext(), newNote);
-                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée, Contenu : " + newContent,
+                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
                             Toast.LENGTH_LONG).show();
                     Intent returnIntent = new Intent();
                     setResult(NoteActivity.RESULT_OK, returnIntent);
                     finish();
                 }
-                /*
-                new AlertDialog.Builder(NoteActivity.this)
-                        .setTitle("Entrée nouvelle note")
-                        .setMessage("Voulez-vous enregistrer votre nouvelle note ?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            //Action après validation
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getApplicationContext(), "Note non sauvegardée",
-                                        Toast.LENGTH_LONG).show();
-                                NoteActivity.this.startActivity(new Intent(NoteActivity.this, NoteActivity.class));
-                                finish();
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                        */
+
             }
 
         });
@@ -114,20 +84,6 @@ public class NoteActivity extends AppCompatActivity{
                         Toast.LENGTH_LONG).show();
                 Intent returnIntent = new Intent();
                 setResult(NoteActivity.RESULT_CANCELED, returnIntent);
-                finish();
-            }
-        });
-
-        Button noteDelete=(Button)findViewById(R.id.noteDelete);
-        noteDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                NoteDao noteDao = new NoteDao();
-                noteDao.delete(getApplicationContext(), finalIdNote);
-                Toast.makeText(getApplicationContext(), "Note "+finalTitle+" supprimée",
-                        Toast.LENGTH_LONG).show();
-                Intent returnIntent = new Intent();
-                setResult(NoteActivity.RESULT_OK, returnIntent);
                 finish();
             }
         });

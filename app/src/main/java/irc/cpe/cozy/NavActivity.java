@@ -1,7 +1,7 @@
 package irc.cpe.cozy;
 
-import android.content.ComponentName;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -65,6 +65,7 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent noteActi = new Intent(view.getContext(), NoteActivity.class);
+                //noteActi.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP );
                 noteActi.putExtra("FOLDER", (selectedItem != null) ? selectedItem.getItemId() : 0);
                 startActivityForResult(noteActi, NOTE_EDITED);
             }
@@ -120,6 +121,32 @@ public class NavActivity extends AppCompatActivity
             System.out.println("[DEBUG] ERROR");
         }
         //mBoundService.test();
+        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int position, long arg3) {
+                final int pos = position;
+                new AlertDialog.Builder(NavActivity.this)
+                        .setTitle("Delete")
+                        .setMessage("Confirm?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                NoteDao noteDao = new NoteDao();
+                                noteDao.delete(getApplicationContext(), ((Explorer) grid.getItemAtPosition(pos)).getId());
+                                reloadExplorer(0);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Cancel does nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return true;
+            }
+        });
+
     }
 
     @Override
@@ -148,6 +175,8 @@ public class NavActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settings = new Intent(this.getApplicationContext(), SettingsActivity.class);
+            startActivity(settings);
             return true;
         }
 
