@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -66,11 +67,19 @@ public class ManageFoldersActivity extends AppCompatActivity {
     public void addFolder(View view)
     {
         EditText name = (EditText) findViewById(R.id.folderName);
-        Folder folder = new Folder(name.getText().toString());
-        dao = new FolderDao();
-        dao.insert(view.getContext(), folder);
-        reloadData();
-        name.setText("");
+        if (TextUtils.isEmpty(name.getText().toString()))
+        {
+            name.setError(getString(R.string.error_field_required));
+            name.requestFocus();
+        }
+        else
+        {
+            Folder folder = new Folder(name.getText().toString());
+            dao = new FolderDao();
+            dao.insert(view.getContext(), folder);
+            reloadData();
+            name.setText("");
+        }
     }
 
     public void reloadData()

@@ -11,6 +11,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import irc.cpe.cozy.Model.Explorer;
+import irc.cpe.cozy.Model.Note;
+import irc.cpe.cozy.Model.TaskNote;
 import irc.cpe.cozy.R;
 
 /**
@@ -30,8 +32,11 @@ public class ExplorerAdapter extends ArrayAdapter<irc.cpe.cozy.Model.Explorer> {
         }
         TextView name = (TextView)convertView.findViewById(R.id.nameExplorer);
         name.setText(item.getName());
-        /*ImageView image = (ImageView) convertView.findViewById(R.id.imageExplorer);
-        image.set*/
+        ImageView image = (ImageView) convertView.findViewById(R.id.imageExplorer);
+        if (item.getType().equals(Note.class))
+            image.setImageResource(R.drawable.ic_content_paste_grey);
+        else if (item.getType().equals(TaskNote.class))
+            image.setImageResource(R.drawable.ic_description_grey);
         return convertView;
     }
 }

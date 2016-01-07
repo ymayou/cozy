@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cozy</string>
+    <string name="app_name">Cozy Notes</string>
     <string name="title_activity_root">RootActivity</string>
     <string name="title_activity_nav">NavActivity</string>
 

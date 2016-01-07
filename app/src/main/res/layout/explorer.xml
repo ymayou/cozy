@@ -8,7 +8,7 @@ android:layout_height="match_parent">
         android:layout_height="@dimen/noteImage"
         android:id="@+id/imageExplorer"
         android:foregroundGravity="top|center"
-        android:src="@drawable/ic_content_paste_black"
+        android:src="@drawable/ic_content_paste_grey"
         android:layout_gravity="center" />
 
     <TextView
