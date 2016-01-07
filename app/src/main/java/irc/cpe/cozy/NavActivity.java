@@ -30,6 +30,9 @@ import irc.cpe.cozy.Model.Folder;
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
+    // Activity results
+    static final int NOTE_EDITED = 1;
+
     private List<Folder> foldersList = new ArrayList<>();
     private Menu menu;
     private List<Explorer> explorers;
@@ -48,12 +51,9 @@ public class NavActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Mettre l'activité en startActivityForResult
-                
-                //NavActivity.this.startActivity(new Intent(NavActivity.this, NoteActivity.class));
-                //NavActivity.this.startActivity(new Intent(NavActivity.this, NewCheckListActivity.class));
-                Intent i = new Intent(view.getContext(), NoteActivity.class);
-                startActivityForResult(i, 1);
+                Intent noteActi = new Intent(view.getContext(), NoteActivity.class);
+                noteActi.putExtra("FOLDER", (selectedItem != null) ? selectedItem.getItemId() : 0);
+                startActivityForResult(noteActi, NOTE_EDITED);
             }
         });
 
@@ -100,10 +100,9 @@ public class NavActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent editNote = new Intent(view.getContext(), NoteActivity.class);
                 editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
-                startActivityForResult(editNote, 1);
+                startActivityForResult(editNote, NOTE_EDITED);
             }
         });
-
     }
 
     @Override
@@ -174,15 +173,17 @@ public class NavActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            if(resultCode == NoteActivity.RESULT_OK){
-                reloadExplorer(0);
-            }
-            if (resultCode == NoteActivity.RESULT_CANCELED) {
-                //In case of cancellation
-            }
+        switch (requestCode){
+            case NOTE_EDITED:
+                if(resultCode == NoteActivity.RESULT_OK){
+                    reloadExplorer(0);
+                }
+                if (resultCode == NoteActivity.RESULT_CANCELED) {
+                    //In case of cancellation
+                }
+                break;
         }
-    }//onActivityResult
+    }
 
     private void reloadExplorer(int idFolder)
     {
