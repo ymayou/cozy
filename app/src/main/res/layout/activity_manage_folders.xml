@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/addFolder"
-        android:src="@drawable/ic_done_24_black"
+        android:src="@drawable/ic_done_24_white"
         android:clickable="true"
         android:onClick="addFolder"
         android:layout_alignParentTop="true"
