@@ -36,6 +36,9 @@ public class NavActivity extends AppCompatActivity
     private NoteDao noteDao;
     private ExplorerAdapter adapter;
     private MenuItem selectedItem;
+    public static final int LOGIN_RESULT_ACT = 700;
+    public static final int LOGIN_RESULT_OK = 701;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +152,7 @@ public class NavActivity extends AppCompatActivity
                 break;
             case R.id.connexion:
                 Intent login = new Intent(this.getApplicationContext(), LoginActivity.class);
-                startActivity(login);
+                startActivityForResult(login, LOGIN_RESULT_ACT);
                 break;
             default:
                 break;
@@ -166,8 +169,7 @@ public class NavActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         updateMenu();
     }
@@ -180,6 +182,12 @@ public class NavActivity extends AppCompatActivity
             }
             if (resultCode == NoteActivity.RESULT_CANCELED) {
                 //In case of cancellation
+            }
+        }
+        if (requestCode == LOGIN_RESULT_ACT) {
+            if (resultCode == LOGIN_RESULT_OK) {
+                selectedItem.setVisible(false);
+                reloadExplorer(0);
             }
         }
     }//onActivityResult
