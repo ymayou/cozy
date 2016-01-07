@@ -32,6 +32,8 @@ public class NavActivity extends AppCompatActivity
 
     // Activity results
     static final int NOTE_EDITED = 1;
+    public static final int LOGIN_RESULT_ACT = 700;
+    public static final int LOGIN_RESULT_OK = 701;
 
     private List<Folder> foldersList = new ArrayList<>();
     private Menu menu;
@@ -149,7 +151,7 @@ public class NavActivity extends AppCompatActivity
                 break;
             case R.id.connexion:
                 Intent login = new Intent(this.getApplicationContext(), LoginActivity.class);
-                startActivity(login);
+                startActivityForResult(login, LOGIN_RESULT_ACT);
                 break;
             default:
                 break;
@@ -183,8 +185,14 @@ public class NavActivity extends AppCompatActivity
                     //In case of cancellation
                 }
                 break;
+            case LOGIN_RESULT_ACT:
+                if (resultCode == LOGIN_RESULT_OK) {
+                    selectedItem.setVisible(false);
+                    reloadExplorer(0);
+                }
+                break;
         }
-    }
+    }//onActivityResult
 
     private void reloadExplorer(int idFolder)
     {
