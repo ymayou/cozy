@@ -59,6 +59,7 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent noteActi = new Intent(view.getContext(), NoteActivity.class);
+                //noteActi.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP );
                 noteActi.putExtra("FOLDER", (selectedItem != null) ? selectedItem.getItemId() : 0);
                 startActivityForResult(noteActi, NOTE_EDITED);
             }
