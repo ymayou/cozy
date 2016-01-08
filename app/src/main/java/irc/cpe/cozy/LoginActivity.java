@@ -52,13 +52,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
@@ -311,6 +304,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("cozy_url", mEmail);
+            editor.putString("cozy_account_password", mPassword);
+
             CozyManager cozyManager = CozyManager.getInstance(LoginActivity.this);
             if (cozyManager.isConnectedToInternet()) {
                 CozyClient cozyClient = cozyManager.cozyClient;
@@ -324,7 +322,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         }
                     });
                     // Launch Cozy sync
-                    // TODO : utiliser service pour appels
                     ServiceManager.getService(getApplicationContext());
                     return true;
                 } else {

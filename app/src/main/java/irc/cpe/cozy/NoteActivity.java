@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 import irc.cpe.cozy.Dao.NoteDao;
 import irc.cpe.cozy.Model.Note;
 import irc.cpe.cozy.Rest.ServiceManager;
@@ -86,6 +88,7 @@ public class NoteActivity extends AppCompatActivity{
                     if (settings.getBoolean("cozy_automatic_sync", false)) {
                         String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(newNote, getApplicationContext(), null);
                         if (idCozy == null) {
+                            newNote.setIdCozy(UUID.randomUUID().toString());
                             Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
                                     Toast.LENGTH_SHORT).show();
                         } else {
