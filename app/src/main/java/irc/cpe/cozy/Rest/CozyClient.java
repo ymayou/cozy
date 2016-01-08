@@ -33,6 +33,7 @@ public class CozyClient {
                 Settings.Secure.ANDROID_ID);
         boolean result = false;
         RestClient client = new RestClient();
+        if (url == null || url.length() < 5) return result;
         try {
             String response = client.post(url + "/device",
                     "{\"login\":\"" + deviceId + "\", \"permissions\": {\"File\": {\"description\": \"Synchronize files\"}} }",
@@ -88,6 +89,7 @@ public class CozyClient {
         String password = settings.getString("cozy_device_password", null);
         String username = settings.getString("android_device_id", null);
         String url = settings.getString("cozy_url", "").replaceAll("/$", "");
+        if (url == null || url.length() < 5) return result;
         try {
             Response response = client.post(url + "/ds-api/data/",
                     document,
@@ -122,6 +124,7 @@ public class CozyClient {
         String password = settings.getString("cozy_device_password", null);
         String username = settings.getString("android_device_id", null);
         String url = settings.getString("cozy_url", "").replaceAll("/$", "");
+        if (url == null || url.length() < 5) return result;
         try {
             Response response = client.get(url + "/ds-api/data/" + id + "/",
                     username,
@@ -150,6 +153,7 @@ public class CozyClient {
         String password = settings.getString("cozy_device_password", null);
         String username = settings.getString("android_device_id", null);
         String url = settings.getString("cozy_url", "").replaceAll("/$", "");
+        if (url == null || url.length() < 5) return result;
         try {
             Response response = client.delete(url + "/ds-api/data/" + id + "/",
                     username,
@@ -181,6 +185,7 @@ public class CozyClient {
         String password = settings.getString("cozy_device_password", null);
         String username = settings.getString("android_device_id", null);
         String url = settings.getString("cozy_url", "").replaceAll("/$", "");
+        if (url == null || url.length() < 5) return result;
         try {
             Response response = client.put(url + "/ds-api/upsert/data/" + documentId + "/",
                     document,
@@ -207,6 +212,7 @@ public class CozyClient {
         String device = settings.getString("android_device_id", null);
         String url = settings.getString("cozy_url", "").replaceAll("/$", "");
         String password = settings.getString("cozy_account_password", null);
+        if (url == null || url.length() < 5) return;
         try {
             client.delete(url + "/device/" + device,
                     "owner",

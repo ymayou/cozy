@@ -308,6 +308,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("cozy_url", mEmail);
             editor.putString("cozy_account_password", mPassword);
+            editor.apply();
 
             CozyManager cozyManager = CozyManager.getInstance(LoginActivity.this);
             if (cozyManager.isConnectedToInternet()) {
