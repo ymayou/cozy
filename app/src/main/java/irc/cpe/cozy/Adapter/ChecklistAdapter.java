@@ -14,9 +14,6 @@ import irc.cpe.cozy.Model.Task;
 import irc.cpe.cozy.NewCheckListActivity;
 import irc.cpe.cozy.R;
 
-/**
- * Created by Angèle on 07/01/2016.
- */
 public class ChecklistAdapter extends ArrayAdapter<Task> {
     int layoutId;
     public ChecklistAdapter(Context context, int resource, List<Task> objects) {

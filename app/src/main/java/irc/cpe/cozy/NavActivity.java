@@ -135,32 +135,9 @@ public class NavActivity extends AppCompatActivity
             }
         });
 
-        /*grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int position, long arg3) {
-                final int pos = position;
-
-                new AlertDialog.Builder(NavActivity.this)
-                        .setTitle("Delete")
-                        .setMessage("Confirm?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                NoteDao noteDao = new NoteDao();
-                                noteDao.delete(getApplicationContext(), ((Explorer) grid.getItemAtPosition(pos)).getId());
-                                reloadExplorer(0);
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Cancel does nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                return true;
-            }
-        });*/
+        if (settings.getString("cozy_url", null) == null) {
+            menu.findItem(R.id.connexion).setVisible(false);
+        }
 
     }
 
@@ -353,10 +330,10 @@ public class NavActivity extends AppCompatActivity
             if (settings.getBoolean("cozy_automatic_sync", false)) {
                 boolean result = ServiceManager.getService(getApplicationContext()).deleteDocument(getApplicationContext(), noteToDelete.getIdCozy());
                 if (result == false) {
-                    Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
+                    Toast.makeText(getApplicationContext(), "Synchronization with Cozy failed",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Note supprimée de Cozy",
+                    Toast.makeText(getApplicationContext(), "Element deleted from Cozy",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -364,7 +341,21 @@ public class NavActivity extends AppCompatActivity
         }
         else if (toDelete.getType().equals(TaskNote.class))
         {
+            TaskNote taskToDelete = taskNoteDao.selectById(getApplicationContext(), toDelete.getId());
             taskNoteDao.delete(getApplicationContext(), toDelete.getId());
+
+            // Sync Cozy
+            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+            if (settings.getBoolean("cozy_automatic_sync", false)) {
+                boolean result = ServiceManager.getService(getApplicationContext()).deleteDocument(getApplicationContext(), taskToDelete.getIdCozy());
+                if (result == false) {
+                    Toast.makeText(getApplicationContext(), "Synchronization with Cozy failed",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Element deleted from Cozy",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
         }
         reloadExplorer(currentFolder);
         return true;

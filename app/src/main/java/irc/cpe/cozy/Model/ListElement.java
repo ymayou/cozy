@@ -1,9 +1,5 @@
 package irc.cpe.cozy.Model;
 
-/**
- * Created by Angèle on 04/01/2016.
- */
-
 public class ListElement {
 
         String name = null;

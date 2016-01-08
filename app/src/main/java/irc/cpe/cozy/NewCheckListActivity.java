@@ -1,6 +1,7 @@
 package irc.cpe.cozy;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,15 +11,18 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import irc.cpe.cozy.Adapter.ChecklistAdapter;
 import irc.cpe.cozy.Dao.TaskDao;
 import irc.cpe.cozy.Dao.TaskNoteDao;
 import irc.cpe.cozy.Model.Task;
 import irc.cpe.cozy.Model.TaskNote;
+import irc.cpe.cozy.Rest.ServiceManager;
 
 public class NewCheckListActivity extends AppCompatActivity {
 
@@ -67,31 +71,39 @@ public class NewCheckListActivity extends AppCompatActivity {
         tasksView.setAdapter(dataAdapter);
     }
 
-    public void addElement(View view)
-    {
+    public void addElement(View view) {
         EditText title = (EditText) findViewById(R.id.listeTitle);
-        if (TextUtils.isEmpty(title.getText().toString()))
-        {
+        if (TextUtils.isEmpty(title.getText().toString())) {
             title.setError(getString(R.string.error_field_required_other));
             title.requestFocus();
-        }
-        else
-        {
-            if (taskNote == null)
-            {
+        } else {
+            if (taskNote == null) {
                 taskNote = new TaskNote(title.getText().toString(), null, idFolder);
                 taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
                 taskNote.setTasks(tasks);
                 taskNote.setFolder(idFolder);
+
+                // Sync Cozy
+                SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                if (settings.getBoolean("cozy_automatic_sync", false)) {
+                    String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(taskNote, getApplicationContext(), null);
+                    if (idCozy == null) {
+                        taskNote.setIdCozy(UUID.randomUUID().toString());
+                        Toast.makeText(getApplicationContext(), "Synchronization with Cozy failed",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        taskNote.setIdCozy(idCozy);
+                        Toast.makeText(getApplicationContext(), "Element synchronized with Cozy",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
             }
             EditText element = (EditText) findViewById(R.id.newElement);
-            if (TextUtils.isEmpty(element.getText().toString()))
-            {
+            if (TextUtils.isEmpty(element.getText().toString())) {
                 element.setError(getString(R.string.error_field_required));
                 element.requestFocus();
-            }
-            else
-            {
+            } else {
                 Task task = new Task(false, element.getText().toString(), taskNote.getId());
                 taskNote.getTasks().add(task);
                 taskDao.insert(this.getApplicationContext(), task);
@@ -107,11 +119,9 @@ public class NewCheckListActivity extends AppCompatActivity {
             case android.R.id.home:
                 boolean ok = true;
 
-                if (nameChanged)
-                {
+                if (nameChanged) {
                     EditText name = (EditText) findViewById(R.id.listeTitle);
-                    if (TextUtils.isEmpty(name.getText().toString()))
-                    {
+                    if (TextUtils.isEmpty(name.getText().toString())) {
                         if (taskNote == null) {
                             // cancel
                             return super.onOptionsItemSelected(item);
@@ -119,23 +129,45 @@ public class NewCheckListActivity extends AppCompatActivity {
                         name.setError(getString(R.string.error_field_required));
                         name.requestFocus();
                         ok = false;
-                    }
-                    else
-                    {
+                    } else {
                         if (taskNote == null) {
-                                taskNote = new TaskNote(name.getText().toString(), null, idFolder);
-                                taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
-                        }
-                        else if (!name.getText().toString().equals(taskNote.getName()))
-                        {
+                            taskNote = new TaskNote(name.getText().toString(), null, idFolder);
+                            taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
+                            // Sync Cozy
+                            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                            if (settings.getBoolean("cozy_automatic_sync", false)) {
+                                String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(taskNote, getApplicationContext(), null);
+                                if (idCozy == null) {
+                                    taskNote.setIdCozy(UUID.randomUUID().toString());
+                                    Toast.makeText(getApplicationContext(), "Synchronization with Cozy failed",
+                                            Toast.LENGTH_SHORT).show();
+                                } else {
+                                    taskNote.setIdCozy(idCozy);
+                                    Toast.makeText(getApplicationContext(), "Element synchronized with Cozy",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } else if (!name.getText().toString().equals(taskNote.getName())) {
                             taskNote.setName(name.getText().toString());
                             taskNoteDao.update(getApplicationContext(), taskNote);
+                            // Sync Cozy
+                            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                            if (settings.getBoolean("cozy_automatic_sync", false)) {
+                                String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(taskNote, getApplicationContext(), taskNote.getIdCozy());
+                                if (idCozy == null) {
+                                    Toast.makeText(getApplicationContext(), "Synchronization with Cozy failed",
+                                            Toast.LENGTH_SHORT).show();
+                                } else {
+                                    taskNote.setIdCozy(idCozy);
+                                    Toast.makeText(getApplicationContext(), "Element synchronized with Cozy",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }
                 }
 
-                if (taskUpdated.size() > 0)
-                {
+                if (taskUpdated.size() > 0) {
                     EditText name = (EditText) findViewById(R.id.listeTitle);
                     name.requestFocus();
                     for (Task t : taskUpdated)
@@ -153,18 +185,16 @@ public class NewCheckListActivity extends AppCompatActivity {
         return true;
     }
 
-    public void onCheckboxClicked(View view)
-    {
+    public void onCheckboxClicked(View view) {
         ListView list = (ListView) findViewById(R.id.listView_checklist);
-        Task task = (Task)list.getAdapter().getItem(list.getPositionForView((View)view.getParent()));
+        Task task = (Task) list.getAdapter().getItem(list.getPositionForView((View) view.getParent()));
         task.setStatus(((CheckBox) findViewById(R.id.checkBox1)).isChecked());
         taskDao.update(getApplicationContext(), task);
     }
 
-    public void deleteTask(View view)
-    {
+    public void deleteTask(View view) {
         ListView list = (ListView) findViewById(R.id.listView_checklist);
-        Task task = (Task)list.getAdapter().getItem(list.getPositionForView((View)view.getParent()));
+        Task task = (Task) list.getAdapter().getItem(list.getPositionForView((View) view.getParent()));
         taskNote.getTasks().remove(task);
         taskDao.delete(getApplicationContext(), task.getId());
         dataAdapter.notifyDataSetChanged();

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import irc.cpe.cozy.Rest.ServiceManager;
 
@@ -31,8 +32,13 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("cozy_automatic_sync", toggle.isChecked());
         editor.apply();
-        // Make service bound if necessary
-        if (toggle.isChecked()) ServiceManager.getService(getApplicationContext());
+        if (settings.getString("cozy_url", null) == null) {
+            Toast.makeText(getApplicationContext(), "Your device has to be linked with Cozy first", Toast.LENGTH_SHORT).show();
+            toggle.setChecked(false);
+        } else {
+            // Make service bound if necessary
+            if (toggle.isChecked()) ServiceManager.getService(getApplicationContext());
+        }
     }
 
 }

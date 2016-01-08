@@ -12,9 +12,6 @@ import java.util.List;
 import irc.cpe.cozy.Model.Folder;
 import irc.cpe.cozy.R;
 
-/**
- * Created by You on 05/01/2016.
- */
 public class FolderAdapter extends ArrayAdapter<Folder> {
     int layoutId;
     public FolderAdapter(Context context, int resource, List<Folder> objects) {

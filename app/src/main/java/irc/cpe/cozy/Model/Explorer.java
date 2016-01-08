@@ -1,8 +1,5 @@
 package irc.cpe.cozy.Model;
 
-/**
- * Created by You on 01/01/2016.
- */
 public class Explorer {
     private int id;
     private String name;

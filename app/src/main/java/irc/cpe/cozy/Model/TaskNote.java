@@ -2,9 +2,6 @@ package irc.cpe.cozy.Model;
 
 import java.util.List;
 
-/**
- * Created by You on 18/12/2015.
- */
 public class TaskNote {
     private int id;
     private String name;

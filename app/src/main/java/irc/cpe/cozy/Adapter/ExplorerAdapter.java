@@ -15,9 +15,6 @@ import irc.cpe.cozy.Model.Note;
 import irc.cpe.cozy.Model.TaskNote;
 import irc.cpe.cozy.R;
 
-/**
- * Created by You on 01/01/2016.
- */
 public class ExplorerAdapter extends ArrayAdapter<irc.cpe.cozy.Model.Explorer> {
     int layoutId;
     public ExplorerAdapter(Context context, int resource, List<irc.cpe.cozy.Model.Explorer> objects) {

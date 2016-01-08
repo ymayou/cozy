@@ -64,18 +64,18 @@ public class NoteActivity extends AppCompatActivity{
                     if (settings.getBoolean("cozy_automatic_sync", false)) {
                         String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(editNote, getApplicationContext(), editNote.getIdCozy());
                         if (idCozy == null) {
-                            Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
+                            Toast.makeText(getApplicationContext(), "Synchronization with Cozy failed",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             editNote.setIdCozy(idCozy);
-                            Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' synchronisée avec Cozy",
+                            Toast.makeText(getApplicationContext(), "Element synchronized with Cozy",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     noteDao.update(getApplicationContext(), editNote);
-                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' saved",
+                            Toast.LENGTH_SHORT).show();
 
                     Intent returnIntent = new Intent();
                     setResult(NoteActivity.RESULT_OK, returnIntent);
@@ -89,11 +89,11 @@ public class NoteActivity extends AppCompatActivity{
                         String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(newNote, getApplicationContext(), null);
                         if (idCozy == null) {
                             newNote.setIdCozy(UUID.randomUUID().toString());
-                            Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
+                            Toast.makeText(getApplicationContext(), "Synchronization with Cozy failed",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             newNote.setIdCozy(idCozy);
-                            Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' synchronisée avec Cozy",
+                            Toast.makeText(getApplicationContext(), "Element synchronized with Cozy",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -102,8 +102,8 @@ public class NoteActivity extends AppCompatActivity{
                     //Insertion de la nouvelle note
                     NoteDao noteDao = new NoteDao();
                     noteDao.insert(getApplicationContext(), newNote);
-                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' saved",
+                            Toast.LENGTH_SHORT).show();
                     Intent returnIntent = new Intent();
                     setResult(NoteActivity.RESULT_OK, returnIntent);
                     finish();
@@ -117,16 +117,13 @@ public class NoteActivity extends AppCompatActivity{
         noteCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                Toast.makeText(getApplicationContext(), "Note non sauvegardée",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Note non saved",
+                        Toast.LENGTH_SHORT).show();
                 Intent returnIntent = new Intent();
                 setResult(NoteActivity.RESULT_CANCELED, returnIntent);
                 finish();
             }
         });
-
-        //Intent newIntent = new Intent(getApplicationContext(), WebserviceActivity.class);
-        //startActivity(newIntent);
     }
 
 }
