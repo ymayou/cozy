@@ -98,7 +98,6 @@ public class NoteActivity extends AppCompatActivity{
                         }
                     }
 
-
                     //Insertion de la nouvelle note
                     NoteDao noteDao = new NoteDao();
                     noteDao.insert(getApplicationContext(), newNote);

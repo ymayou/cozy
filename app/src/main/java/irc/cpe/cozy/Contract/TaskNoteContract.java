@@ -11,6 +11,7 @@ public class TaskNoteContract {
         public static final String TABLE_NAME = "taskNote";
 
         public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_COZY_ID = "cozy_id";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_FOLDER = "folder";
     }
@@ -18,6 +19,7 @@ public class TaskNoteContract {
     private static final String SQL_CREATE_TABLE_TASKNOTE =
             "CREATE TABLE " + TaskNoteDB.TABLE_NAME + " (" +
                     TaskNoteDB.COLUMN_ID + " INTEGER PRIMARY KEY," +
+                    TaskNoteDB.COLUMN_COZY_ID + " TEXT, " +
                     TaskNoteDB.COLUMN_NAME + " TEXT, " +
                     TaskNoteDB.COLUMN_FOLDER + " INTEGER " +
                     " )";
