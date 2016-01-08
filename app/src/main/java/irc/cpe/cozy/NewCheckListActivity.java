@@ -23,6 +23,7 @@ import irc.cpe.cozy.Contract.NoteTaskNoteContract;
 import irc.cpe.cozy.Contract.TaskNoteContract;
 import irc.cpe.cozy.Dao.TaskDao;
 import irc.cpe.cozy.Dao.TaskNoteDao;
+import irc.cpe.cozy.Model.Folder;
 import irc.cpe.cozy.Model.ListElement;
 import irc.cpe.cozy.Model.Task;
 import irc.cpe.cozy.Model.TaskNote;
@@ -158,5 +159,22 @@ public class NewCheckListActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    public void onCheckboxClicked(View view)
+    {
+        ListView list = (ListView) findViewById(R.id.listView_checklist);
+        Task task = (Task)list.getAdapter().getItem(list.getPositionForView((View)view.getParent()));
+        task.setStatus(((CheckBox) findViewById(R.id.checkBox1)).isChecked());
+        taskDao.update(getApplicationContext(), task);
+    }
+
+    public void deleteTask(View view)
+    {
+        ListView list = (ListView) findViewById(R.id.listView_checklist);
+        Task task = (Task)list.getAdapter().getItem(list.getPositionForView((View)view.getParent()));
+        taskNote.getTasks().remove(task);
+        taskDao.delete(getApplicationContext(), task.getId());
+        dataAdapter.notifyDataSetChanged();
     }
 }

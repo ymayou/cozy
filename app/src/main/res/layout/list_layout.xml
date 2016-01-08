@@ -16,7 +16,17 @@
         android:id="@+id/textElement"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="@+id/checkBox1"
-        android:layout_toRightOf="@+id/checkBox1" />
+        android:layout_toEndOf="@+id/checkBox1" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btDeleteTask"
+        android:layout_alignTop="@+id/textElement"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="5dp"
+        android:src="@drawable/ic_delete_24_grey"
+        android:background="@null"
+        android:onClick="deleteTask" />
 
 </RelativeLayout>
