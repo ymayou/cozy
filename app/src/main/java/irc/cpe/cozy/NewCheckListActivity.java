@@ -160,10 +160,15 @@ public class NewCheckListActivity extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.checkBox1:
                 if (checked){
-
+                    Task task = this.taskNote.getTasks().get(R.id.textElement);
+                    task.setStatus(true);
+                    dataAdapter.notifyDataSetChanged();
                 }
-                else
-
+                else{
+                    Task task = this.taskNote.getTasks().get(R.id.textElement);
+                    task.setStatus(false);
+                    dataAdapter.notifyDataSetChanged();
+                }
                 break;
         }
     }
