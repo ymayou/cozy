@@ -29,6 +29,7 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
             task.setId(Integer.parseInt(notes.getString(notes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_ID))));
             task.setName(notes.getString(notes.getColumnIndex(TaskNoteContract.TaskNoteDB.TABLE_NAME)));
             task.setFolder(Integer.parseInt(notes.getString(notes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_FOLDER))));
+            task.setIdCozy(notes.getString(notes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_COZY_ID)));
 
             TaskDao taskDao = new TaskDao();
             List<Task> tasks = taskDao.select(context, new String[]{NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE}, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE + "=?", new String[]{String.valueOf(task.getId())}, null, null, null, null);
@@ -45,6 +46,7 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
     public TaskNote selectById(Context context, int id) {
         String[] columns = {
                 TaskNoteContract.TaskNoteDB.COLUMN_ID,
+                TaskNoteContract.TaskNoteDB.COLUMN_COZY_ID,
                 TaskNoteContract.TaskNoteDB.COLUMN_NAME,
                 TaskNoteContract.TaskNoteDB.COLUMN_FOLDER
         };
@@ -55,6 +57,7 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
         taskNote.setId(Integer.parseInt(taskNotes.getString(taskNotes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_ID))));
         taskNote.setName(taskNotes.getString(taskNotes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_NAME)));
         taskNote.setFolder(Integer.parseInt(taskNotes.getString(taskNotes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_FOLDER))));
+        taskNote.setIdCozy(taskNotes.getString(taskNotes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_COZY_ID)));
 
         taskNotes.close();
 
@@ -75,6 +78,7 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
     public void insert(Context context, TaskNote object) {
         ContentValues values = new ContentValues();
         values.put(TaskNoteContract.TaskNoteDB.COLUMN_NAME, object.getName());
+        values.put(TaskNoteContract.TaskNoteDB.COLUMN_COZY_ID, object.getIdCozy());
         values.put(TaskNoteContract.TaskNoteDB.COLUMN_FOLDER, object.getFolder());
         CozyNoteHelper.getInstance(context).getReadableDatabase().insert(TaskNoteContract.TaskNoteDB.TABLE_NAME, null, values);
     }
@@ -82,6 +86,7 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
     public int insertForId(Context context, TaskNote taskNote){
         ContentValues values = new ContentValues();
         values.put(TaskNoteContract.TaskNoteDB.COLUMN_NAME, taskNote.getName());
+        values.put(TaskNoteContract.TaskNoteDB.COLUMN_COZY_ID, taskNote.getIdCozy());
         values.put(TaskNoteContract.TaskNoteDB.COLUMN_FOLDER, taskNote.getFolder());
         return (int) CozyNoteHelper.getInstance(context).getReadableDatabase().insert(TaskNoteContract.TaskNoteDB.TABLE_NAME, null, values);
     }
@@ -90,6 +95,7 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
     public void update(Context context, TaskNote object) {
         ContentValues values = new ContentValues();
         values.put(TaskNoteContract.TaskNoteDB.COLUMN_NAME, object.getName());
+        values.put(TaskNoteContract.TaskNoteDB.COLUMN_COZY_ID, object.getIdCozy());
         values.put(TaskNoteContract.TaskNoteDB.COLUMN_FOLDER, object.getFolder());
         CozyNoteHelper.getInstance(context).getReadableDatabase().update(TaskNoteContract.TaskNoteDB.TABLE_NAME, values, TaskNoteContract.TaskNoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(object.getId())});
     }
@@ -120,16 +126,6 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
         }
         checkList.close();
         return explorers;
-    }
-
-    public TaskNote selectMaxId(Context context)
-    {
-        Cursor notes = CozyNoteHelper.getInstance(context).getReadableDatabase().query(TaskNoteContract.TaskNoteDB.TABLE_NAME, new String[]{"Max(" + TaskNoteContract.TaskNoteDB.COLUMN_ID + ")"}, null, null, null, null, null, null);
-        notes.moveToFirst();
-        TaskNote task = new TaskNote();
-        task.setId(notes.getInt(notes.getColumnIndex("Max(" + TaskNoteContract.TaskNoteDB.COLUMN_ID + ")")));
-        notes.close();
-        return task;
     }
 
     public void deleteByFolder(Context context, int folderId)

@@ -4,6 +4,7 @@ import java.util.List;
 
 public class TaskNote {
     private int id;
+    private String idCozy;
     private String name;
     private List<Task> tasks;
     private int folder;
@@ -54,5 +55,13 @@ public class TaskNote {
 
     public void setFolder(int folder) {
         this.folder = folder;
+    }
+
+    public String getIdCozy() {
+        return idCozy;
+    }
+
+    public void setIdCozy(String idCozy) {
+        this.idCozy = idCozy;
     }
 }
