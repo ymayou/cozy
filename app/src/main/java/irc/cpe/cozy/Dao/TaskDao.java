@@ -24,7 +24,7 @@ public class TaskDao implements CommonDao<Task> {
         {
             list.add(new Task(Integer.parseInt(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID))),
                     tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_CONTENT)),
-                    Boolean.valueOf(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_STATUS))),
+                    (tasks.getInt(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_STATUS)) == 1),
                     Integer.parseInt(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE)))));
             tasks.moveToNext();
         }

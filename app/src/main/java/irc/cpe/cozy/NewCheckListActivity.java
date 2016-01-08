@@ -153,23 +153,20 @@ public class NewCheckListActivity extends AppCompatActivity {
         return true;
     }
 
-    public void onCheckboxClicked(View view) {
-        boolean checked = ((CheckBox) view).isChecked();
+    public void onCheckboxClicked(View view)
+    {
+        ListView list = (ListView) findViewById(R.id.listView_checklist);
+        Task task = (Task)list.getAdapter().getItem(list.getPositionForView((View)view.getParent()));
+        task.setStatus(((CheckBox) findViewById(R.id.checkBox1)).isChecked());
+        taskDao.update(getApplicationContext(), task);
+    }
 
-        // Check which checkbox was clicked
-        switch(view.getId()) {
-            case R.id.checkBox1:
-                if (checked){
-                    Task task = this.taskNote.getTasks().get(R.id.textElement);
-                    task.setStatus(true);
-                    dataAdapter.notifyDataSetChanged();
-                }
-                else{
-                    Task task = this.taskNote.getTasks().get(R.id.textElement);
-                    task.setStatus(false);
-                    dataAdapter.notifyDataSetChanged();
-                }
-                break;
-        }
+    public void deleteTask(View view)
+    {
+        ListView list = (ListView) findViewById(R.id.listView_checklist);
+        Task task = (Task)list.getAdapter().getItem(list.getPositionForView((View)view.getParent()));
+        taskNote.getTasks().remove(task);
+        taskDao.delete(getApplicationContext(), task.getId());
+        dataAdapter.notifyDataSetChanged();
     }
 }
