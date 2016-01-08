@@ -1,7 +1,5 @@
 package irc.cpe.cozy;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -110,6 +108,7 @@ public class NavActivity extends AppCompatActivity
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int position, long arg3) {
                 final int pos = position;
+                /*
                 new AlertDialog.Builder(NavActivity.this)
                         .setTitle("Delete")
                         .setMessage("Confirm?")
@@ -126,7 +125,7 @@ public class NavActivity extends AppCompatActivity
                             }
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
+                        .show();*/
                 return true;
             }
         });
