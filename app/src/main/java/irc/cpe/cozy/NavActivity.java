@@ -135,7 +135,7 @@ public class NavActivity extends AppCompatActivity
             }
         });
 
-        if (settings.getString("cozy_url", null) == null) {
+        if (settings.getString("cozy_url", null) != null) {
             menu.findItem(R.id.connexion).setVisible(false);
         }
 
