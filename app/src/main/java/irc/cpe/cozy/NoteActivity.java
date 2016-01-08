@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,64 +53,70 @@ public class NoteActivity extends AppCompatActivity{
             public void onClick(View arg0) {
                 EditText newTextTitle=(EditText)findViewById(R.id.noteTitle);
                 EditText newTextContent=(EditText)findViewById(R.id.noteContent);
-                String newTitle = newTextTitle.getText().toString();
-                String newContent = newTextContent.getText().toString();
-                if(finalIdNote >0){
-                    //Modification de la note existante
-                    NoteDao noteDao = new NoteDao();
-                    Note editNote = new Note(finalIdNote, newTitle, newContent, finalIdFolder);
-
-                    // Sync Cozy
-                    SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                    if (settings.getBoolean("cozy_automatic_sync", false)) {
-                        String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(editNote, getApplicationContext(), editNote.getIdCozy());
-                        if (idCozy == null) {
-                            Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            editNote.setIdCozy(idCozy);
-                            Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' synchronisée avec Cozy",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    noteDao.update(getApplicationContext(), editNote);
-                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
-                            Toast.LENGTH_LONG).show();
-
-                    Intent returnIntent = new Intent();
-                    setResult(NoteActivity.RESULT_OK, returnIntent);
-                    finish();
-                }else{
-                    Note newNote = new Note(newTitle, newContent, finalIdFolder);
-
-                    // Sync Cozy
-                    SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                    if (settings.getBoolean("cozy_automatic_sync", false)) {
-                        String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(newNote, getApplicationContext(), null);
-                        if (idCozy == null) {
-                            newNote.setIdCozy(UUID.randomUUID().toString());
-                            Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            newNote.setIdCozy(idCozy);
-                            Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' synchronisée avec Cozy",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    //Insertion de la nouvelle note
-                    NoteDao noteDao = new NoteDao();
-                    noteDao.insert(getApplicationContext(), newNote);
-                    Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
-                            Toast.LENGTH_LONG).show();
-                    Intent returnIntent = new Intent();
-                    setResult(NoteActivity.RESULT_OK, returnIntent);
-                    finish();
+                if (TextUtils.isEmpty(newTextTitle.getText().toString()))
+                {
+                    newTextTitle.setError(getString(R.string.error_field_required));
+                    newTextTitle.requestFocus();
                 }
+                else
+                {
+                    String newTitle = newTextTitle.getText().toString();
+                    String newContent = newTextContent.getText().toString();
+                    if(finalIdNote >0){
+                        //Modification de la note existante
+                        NoteDao noteDao = new NoteDao();
+                        Note editNote = new Note(finalIdNote, newTitle, newContent, finalIdFolder);
 
+                        // Sync Cozy
+                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                        if (settings.getBoolean("cozy_automatic_sync", false)) {
+                            String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(editNote, getApplicationContext(), editNote.getIdCozy());
+                            if (idCozy == null) {
+                                Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                editNote.setIdCozy(idCozy);
+                                Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' synchronisée avec Cozy",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        noteDao.update(getApplicationContext(), editNote);
+                        Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
+                                Toast.LENGTH_LONG).show();
+
+                        Intent returnIntent = new Intent();
+                        setResult(NoteActivity.RESULT_OK, returnIntent);
+                        finish();
+                    }else{
+                        Note newNote = new Note(newTitle, newContent, finalIdFolder);
+
+                        // Sync Cozy
+                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                        if (settings.getBoolean("cozy_automatic_sync", false)) {
+                            String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(newNote, getApplicationContext(), null);
+                            if (idCozy == null) {
+                                newNote.setIdCozy(UUID.randomUUID().toString());
+                                Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                newNote.setIdCozy(idCozy);
+                                Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' synchronisée avec Cozy",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        //Insertion de la nouvelle note
+                        NoteDao noteDao = new NoteDao();
+                        noteDao.insert(getApplicationContext(), newNote);
+                        Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
+                                Toast.LENGTH_LONG).show();
+                        Intent returnIntent = new Intent();
+                        setResult(NoteActivity.RESULT_OK, returnIntent);
+                        finish();
+                    }
+                }
             }
-
         });
 
         Button noteCancel=(Button)findViewById(R.id.noteCancel);
