@@ -1,10 +1,8 @@
 package irc.cpe.cozy.Model;
 
-/**
- * Created by You on 18/12/2015.
- */
 public class Note {
     private int id;
+    private String idCozy;
     private String name;
     private String content;
     private int folder;
@@ -55,5 +53,13 @@ public class Note {
 
     public void setFolder(int folder) {
         this.folder = folder;
+    }
+
+    public String getIdCozy() {
+        return idCozy;
+    }
+
+    public void setIdCozy(String idCozy) {
+        this.idCozy = idCozy;
     }
 }

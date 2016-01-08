@@ -4,27 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import irc.cpe.cozy.Adapter.ChecklistAdapter;
-import irc.cpe.cozy.Contract.NoteTaskNoteContract;
-import irc.cpe.cozy.Contract.TaskNoteContract;
 import irc.cpe.cozy.Dao.TaskDao;
 import irc.cpe.cozy.Dao.TaskNoteDao;
-import irc.cpe.cozy.Model.Folder;
-import irc.cpe.cozy.Model.ListElement;
 import irc.cpe.cozy.Model.Task;
 import irc.cpe.cozy.Model.TaskNote;
 

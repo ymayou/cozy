@@ -26,15 +26,15 @@ public class CozyClient {
      * @return true if the device is authorized to use the API
      */
     public boolean addDevice() {
-        // TODO : replace password (using app settings)
-        String password = "teddygustiaux";
+        SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
+        String password = settings.getString("cozy_account_password", null);
+        String url = settings.getString("cozy_url", "").replaceAll("/$", "");
         String deviceId = Settings.Secure.getString(c.getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         boolean result = false;
         RestClient client = new RestClient();
         try {
-            // TODO : replace URL (using app settings)
-            String response = client.post("https://gustiaux.cozycloud.cc/device",
+            String response = client.post(url + "/device",
                     "{\"login\":\"" + deviceId + "\", \"permissions\": {\"File\": {\"description\": \"Synchronize files\"}} }",
                     "owner",
                     password).body().string();
@@ -42,7 +42,6 @@ public class CozyClient {
             JSONObject jsonObject = new JSONObject(response);
             Iterator<?> keys = jsonObject.keys();
 
-            SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("android_device_id", deviceId);
             editor.apply();
@@ -69,7 +68,7 @@ public class CozyClient {
                 }
             }
             System.out.println("[DEBUG] Cozy device ID: " + settings.getString("android_device_id", null));
-            System.out.println("[DEBUG] Cozy device passord: " + settings.getString("cozy_device_password", null));
+            System.out.println("[DEBUG] Cozy device password: " + settings.getString("cozy_device_password", null));
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -77,7 +76,8 @@ public class CozyClient {
     }
 
     /**
-     * Create a new document
+     * Create a new document in CozyCloud API
+     *
      * @param document document body
      * @return the document ID
      */
@@ -87,17 +87,20 @@ public class CozyClient {
         SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
         String password = settings.getString("cozy_device_password", null);
         String username = settings.getString("android_device_id", null);
+        String url = settings.getString("cozy_url", "").replaceAll("/$", "");
         try {
-            // TODO : replace URL (using app settings)
-            Response response = client.post("https://gustiaux.cozycloud.cc/ds-api/data/",
+            Response response = client.post(url + "/ds-api/data/",
                     document,
                     username,
                     password);
             System.out.println("[DEBUG] Cozy API response");
             if (response.code() == 201) {
+                System.out.println("[DEBUG] Document created");
                 String body = response.body().string();
                 JSONObject jsonObject = new JSONObject(body);
                 result = jsonObject.getString("_id");
+            } else {
+                System.out.println("[DEBUG] " + response.body().string());
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
@@ -106,15 +109,21 @@ public class CozyClient {
         return result;
     }
 
+    /**
+     * Retrieve a document from CozyCloud API
+     *
+     * @param id document ID
+     * @return the document as a JSON string
+     */
     public String getDocument(String id) {
         String result = null;
         RestClient client = new RestClient();
         SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
         String password = settings.getString("cozy_device_password", null);
         String username = settings.getString("android_device_id", null);
+        String url = settings.getString("cozy_url", "").replaceAll("/$", "");
         try {
-            // TODO : replace URL (using app settings)
-            Response response = client.get("https://gustiaux.cozycloud.cc/ds-api/data/" + id + "/",
+            Response response = client.get(url + "/ds-api/data/" + id + "/",
                     username,
                     password);
             System.out.println("[DEBUG] Cozy API response");
@@ -128,20 +137,28 @@ public class CozyClient {
         return result;
     }
 
+    /**
+     * Delete a document from CozyCloud API
+     *
+     * @param id document ID
+     * @return true if deleted
+     */
     public boolean deleteDocument(String id) {
         boolean result = false;
         RestClient client = new RestClient();
         SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
         String password = settings.getString("cozy_device_password", null);
         String username = settings.getString("android_device_id", null);
+        String url = settings.getString("cozy_url", "").replaceAll("/$", "");
         try {
-            // TODO : replace URL (using app settings)
-            Response response = client.delete("https://gustiaux.cozycloud.cc/ds-api/data/" + id + "/",
+            Response response = client.delete(url + "/ds-api/data/" + id + "/",
                     username,
                     password);
             System.out.println("[DEBUG] Cozy API response");
             if (response.code() == 204) {
                 result = true;
+            } else {
+                System.out.println("[DEBUG] " + response.body().string());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,20 +167,27 @@ public class CozyClient {
         return result;
     }
 
+    /**
+     * Update a document from CozyCloud API
+     *
+     * @param documentId document ID
+     * @param document   document body
+     * @return true if updated
+     */
     public boolean updateDocument(String documentId, String document) {
         boolean result = false;
         RestClient client = new RestClient();
         SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
         String password = settings.getString("cozy_device_password", null);
         String username = settings.getString("android_device_id", null);
+        String url = settings.getString("cozy_url", "").replaceAll("/$", "");
         try {
-            // TODO : replace URL (using app settings)
-            Response response = client.put("https://gustiaux.cozycloud.cc/ds-api/data/" + documentId + "/",
+            Response response = client.put(url + "/ds-api/upsert/data/" + documentId + "/",
                     document,
                     username,
                     password);
             System.out.println("[DEBUG] Cozy API response");
-            if (response.code() == 200) {
+            if (response.code() == 200 || response.code() == 201) {
                 result = true;
             }
         } catch (IOException e) {
@@ -173,14 +197,18 @@ public class CozyClient {
         return result;
     }
 
+    // TODO : appeler à la fermeture ?
+    /**
+     * Remove the device from CozyCloud API
+     */
     public void removeDevice() {
-        String password = "teddygustiaux";
         RestClient client = new RestClient();
         SharedPreferences settings = c.getSharedPreferences("UserInfo", 0);
         String device = settings.getString("android_device_id", null);
+        String url = settings.getString("cozy_url", "").replaceAll("/$", "");
+        String password = settings.getString("cozy_account_password", null);
         try {
-            // TODO : replace URL (using app settings)
-            client.delete("https://gustiaux.cozycloud.cc/device/" + device,
+            client.delete(url + "/device/" + device,
                     "owner",
                     password);
         } catch (IOException e) {

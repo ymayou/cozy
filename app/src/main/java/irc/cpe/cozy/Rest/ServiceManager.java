@@ -20,6 +20,12 @@ public class ServiceManager {
         ServiceManager.context = context;
     }
 
+    /**
+     * Get an instance of the service, create it if not running
+     *
+     * @param context application context
+     * @return the instance of the service
+     */
     public static LocalService getService(Context context) {
         if (manager == null)
             manager = new ServiceManager(context);
@@ -29,9 +35,12 @@ public class ServiceManager {
         return mBoundService;
     }
 
+    /**
+     * Create a connection to the service
+     */
     private static ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            mBoundService = ((LocalService.LocalBinder)service).getService();
+            mBoundService = ((LocalService.LocalBinder) service).getService();
             Toast.makeText(context, R.string.local_service_connected,
                     Toast.LENGTH_SHORT).show();
         }
@@ -43,6 +52,9 @@ public class ServiceManager {
         }
     };
 
+    /**
+     * Bind the service to the context and start it
+     */
     private static void doBindService() {
         Intent i = new Intent(context, LocalService.class);
         context.bindService(i, mConnection, Context.BIND_AUTO_CREATE);
@@ -50,6 +62,9 @@ public class ServiceManager {
         mIsBound = true;
     }
 
+    /**
+     * Stop the service and unbind it
+     */
     private static void doUnbindService() {
         if (mIsBound) {
             context.unbindService(mConnection);
@@ -57,6 +72,11 @@ public class ServiceManager {
         }
     }
 
+    // TODO : appeler à la fermeture ?
+
+    /**
+     * Public method to stop the service
+     */
     public static void destroy() {
         doUnbindService();
     }

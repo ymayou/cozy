@@ -20,7 +20,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="0dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:hint="Title" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -29,7 +30,8 @@
         android:layout_marginLeft="0dp"
         android:layout_below="@+id/listeTitle"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/addChecklist" />
+        android:layout_toStartOf="@+id/addChecklist"
+        android:hint="New element" />
 
     <ImageButton
         android:layout_width="wrap_content"

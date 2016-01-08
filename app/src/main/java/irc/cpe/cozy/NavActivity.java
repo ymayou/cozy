@@ -1,12 +1,8 @@
 package irc.cpe.cozy;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -65,8 +61,11 @@ public class NavActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Launch Cozy sync service
-        syncService = ServiceManager.getService(getApplicationContext());
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        if (settings.getBoolean("cozy_automatic_sync", false)) {
+            // Launch Cozy sync service
+            syncService = ServiceManager.getService(getApplicationContext());
+        }
 
         setContentView(R.layout.activity_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -141,6 +140,7 @@ public class NavActivity extends AppCompatActivity
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int position, long arg3) {
                 final int pos = position;
+
                 new AlertDialog.Builder(NavActivity.this)
                         .setTitle("Delete")
                         .setMessage("Confirm?")
@@ -208,7 +208,6 @@ public class NavActivity extends AppCompatActivity
                 reloadExplorer(0);
                 break;
             case R.id.connexion:
-                syncService.test();
                 Intent login = new Intent(this.getApplicationContext(), LoginActivity.class);
                 startActivityForResult(login, LOGIN_RESULT_ACT);
                 break;
@@ -346,7 +345,22 @@ public class NavActivity extends AppCompatActivity
         Explorer toDelete = explorers.get(info.position);
         if (toDelete.getType().equals(Note.class))
         {
+            Note noteToDelete = noteDao.selectById(getApplicationContext(), toDelete.getId());
             noteDao.delete(getApplicationContext(), toDelete.getId());
+
+            // Sync Cozy
+            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+            if (settings.getBoolean("cozy_automatic_sync", false)) {
+                boolean result = ServiceManager.getService(getApplicationContext()).deleteDocument(getApplicationContext(), noteToDelete.getIdCozy());
+                if (result == false) {
+                    Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Note supprimée de Cozy",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
         }
         else if (toDelete.getType().equals(TaskNote.class))
         {

@@ -41,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("cozy_automatic_sync", toggle.isChecked());
         editor.apply();
+        // Make service bound if necessary
         if (toggle.isChecked()) ServiceManager.getService(getApplicationContext());
     }
 
