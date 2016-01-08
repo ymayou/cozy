@@ -1,7 +1,12 @@
 package irc.cpe.cozy;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +21,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +37,8 @@ import irc.cpe.cozy.Model.Explorer;
 import irc.cpe.cozy.Model.Folder;
 import irc.cpe.cozy.Model.Note;
 import irc.cpe.cozy.Model.TaskNote;
+import irc.cpe.cozy.Rest.LocalService;
+import irc.cpe.cozy.Rest.ServiceManager;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -49,11 +57,17 @@ public class NavActivity extends AppCompatActivity
     private ExplorerAdapter adapter;
     private MenuItem selectedItem;
 
+    private LocalService syncService;
+
     private int currentFolder = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Launch Cozy sync service
+        syncService = ServiceManager.getService(getApplicationContext());
+
         setContentView(R.layout.activity_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -194,6 +208,7 @@ public class NavActivity extends AppCompatActivity
                 reloadExplorer(0);
                 break;
             case R.id.connexion:
+                syncService.test();
                 Intent login = new Intent(this.getApplicationContext(), LoginActivity.class);
                 startActivityForResult(login, LOGIN_RESULT_ACT);
                 break;

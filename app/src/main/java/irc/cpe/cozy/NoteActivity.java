@@ -53,6 +53,7 @@ public class NoteActivity extends AppCompatActivity{
                 if(finalIdNote >0){
                     //Modification de la note existante
                     NoteDao noteDao = new NoteDao();
+                    // TODO : Sync Cozy
                     Note editNote = new Note(finalIdNote, newTitle, newContent, finalIdFolder);
                     noteDao.update(getApplicationContext(), editNote);
                     Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' sauvegardée",
@@ -61,6 +62,7 @@ public class NoteActivity extends AppCompatActivity{
                     setResult(NoteActivity.RESULT_OK, returnIntent);
                     finish();
                 }else{
+                    // TODO : Sync Cozy
                     Note newNote = new Note(newTitle, newContent, finalIdFolder);
                     //Insertion de la nouvelle note
                     NoteDao noteDao = new NoteDao();

@@ -66,6 +66,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="irc.cpe.cozy.NavActivity" />
         </activity>
+        <service android:name=".Rest.LocalService"></service>
     </application>
 
 </manifest>
