@@ -79,9 +79,6 @@ public class NewCheckListActivity extends AppCompatActivity {
         } else {
             if (taskNote == null) {
                 taskNote = new TaskNote(title.getText().toString(), null, idFolder);
-                taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
-                taskNote.setTasks(tasks);
-                taskNote.setFolder(idFolder);
 
                 // Sync Cozy
                 SharedPreferences settings = getSharedPreferences("UserInfo", 0);
@@ -97,6 +94,10 @@ public class NewCheckListActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
+                taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
+                taskNote.setTasks(tasks);
+                taskNote.setFolder(idFolder);
+
 
             }
             EditText element = (EditText) findViewById(R.id.newElement);
@@ -106,6 +107,21 @@ public class NewCheckListActivity extends AppCompatActivity {
             } else {
                 Task task = new Task(false, element.getText().toString(), taskNote.getId());
                 taskNote.getTasks().add(task);
+
+                // Sync Cozy
+                SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                if (settings.getBoolean("cozy_automatic_sync", false)) {
+                    String idCozy = ServiceManager.getService(getApplicationContext()).saveDocument(taskNote, getApplicationContext(), taskNote.getIdCozy());
+                    if (idCozy == null) {
+                        Toast.makeText(getApplicationContext(), "Synchronization with Cozy failed",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        taskNote.setIdCozy(idCozy);
+                        Toast.makeText(getApplicationContext(), "Element synchronized with Cozy",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
                 taskDao.insert(this.getApplicationContext(), task);
                 element.setText("");
                 dataAdapter.notifyDataSetChanged();
@@ -132,7 +148,7 @@ public class NewCheckListActivity extends AppCompatActivity {
                     } else {
                         if (taskNote == null) {
                             taskNote = new TaskNote(name.getText().toString(), null, idFolder);
-                            taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
+
                             // Sync Cozy
                             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                             if (settings.getBoolean("cozy_automatic_sync", false)) {
@@ -147,6 +163,8 @@ public class NewCheckListActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }
+                            taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
+
                         } else if (!name.getText().toString().equals(taskNote.getName())) {
                             taskNote.setName(name.getText().toString());
                             taskNoteDao.update(getApplicationContext(), taskNote);
