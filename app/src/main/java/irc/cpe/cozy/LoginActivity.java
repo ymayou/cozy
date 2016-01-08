@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -36,6 +37,7 @@ import java.util.List;
 
 import irc.cpe.cozy.Rest.CozyClient;
 import irc.cpe.cozy.Rest.CozyManager;
+import irc.cpe.cozy.Rest.ServiceManager;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -321,6 +323,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             Toast.makeText(getApplicationContext(), "Your device has been successfully linked with Cozy", Toast.LENGTH_SHORT).show();
                         }
                     });
+                    // Launch Cozy sync
+                    // TODO : utiliser service pour appels
+                    ServiceManager.getService(getApplicationContext());
                     return true;
                 } else {
                     System.out.println("[DEBUG] Device NOT added successfully");

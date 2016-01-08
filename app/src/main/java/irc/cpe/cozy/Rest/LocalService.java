@@ -4,11 +4,16 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import irc.cpe.cozy.R;
 
@@ -33,7 +38,7 @@ public class LocalService extends Service {
 
     @Override
     public void onCreate() {
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Toast.makeText(getApplicationContext(), "Service created", Toast.LENGTH_SHORT).show();
         System.out.println("[DEBUG] Service created");
         // Display a notification about us starting.  We put an icon in the status bar.
@@ -60,7 +65,7 @@ public class LocalService extends Service {
         return mBinder;
     }
 
-    // This is the object that receives interactions from clients.  See
+    // This is the object that   receives interactions from clients.  See
     // RemoteService for a more complete example.
     private final IBinder mBinder = new LocalBinder();
 
@@ -92,5 +97,72 @@ public class LocalService extends Service {
 
     public void test() {
         Toast.makeText(getApplicationContext(), "Test called", Toast.LENGTH_SHORT).show();
+    }
+
+    private CozyClient getClient(Context context) {
+        CozyManager cozyManager = CozyManager.getInstance(context);
+        if (cozyManager.isConnectedToInternet()) {
+            CozyClient cozyClient = cozyManager.cozyClient;
+            return cozyClient;
+        } else {
+            return null;
+        }
+    }
+
+    public String saveDocument(final Object object, final Context context, final String id) {
+        final String[] result = {null};
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                    String json = ow.writeValueAsString(object);
+                    CozyClient cozyClient = getClient(context);
+                    if (cozyClient != null) {
+                        if (id == null) {
+                            result[0] = cozyClient.createDocument(json);
+                        } else {
+                            if (cozyClient.updateDocument(id, json)) {
+                                result[0] = id;
+                            }
+                        }
+                    }
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        );
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("[DEBUG] Document ID: " + result[0]);
+        return result[0];
+    }
+
+    public boolean deleteDocument(final Context context, final String id) {
+        final boolean[] result = {false};
+        final Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                CozyClient cozyClient = getClient(context);
+                System.out.println("[DEBUG] Document ID: " + id);
+                if (id != null && cozyClient != null) {
+                    result[0] = cozyClient.deleteDocument(id);
+                }
+            }
+        }
+        );
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("[DEBUG] Document deletion: " + result[0]);
+        return result[0];
     }
 }

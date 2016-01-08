@@ -11,6 +11,7 @@ public class NoteContract {
         public static final String TABLE_NAME = "note";
 
         public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_COZY_ID = "cozy_id";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_CONTENT = "content";
         public static final String COLUMN_FOLDER = "folder";
@@ -19,6 +20,7 @@ public class NoteContract {
     private static final String SQL_CREATE_TABLE_NOTE =
             "CREATE TABLE " + NoteDB.TABLE_NAME + " (" +
                     NoteDB.COLUMN_ID + " INTEGER PRIMARY KEY," +
+                    NoteDB.COLUMN_COZY_ID + " TEXT, " +
                     NoteDB.COLUMN_NAME + " TEXT NOT NULL, " +
                     NoteDB.COLUMN_CONTENT + " TEXT, " +
                     NoteDB.COLUMN_FOLDER + " INTEGER " +
