@@ -88,4 +88,9 @@ public class NoteDao implements CommonDao<Note> {
         return note;
     }
 
+    public void deleteByFolder(Context context, int folderId)
+    {
+        CozyNoteHelper.getInstance(context).getReadableDatabase().delete(NoteContract.NoteDB.TABLE_NAME, NoteContract.NoteDB.COLUMN_FOLDER + "=?", new String[]{String.valueOf(folderId)});
+    }
+
 }

@@ -27,13 +27,6 @@
         </activity>
         <activity android:name=".Rest.WebserviceActivity" />
         <activity
-            android:name=".NewCheckListActivity"
-            android:label="@string/title_activity_nav"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ManageFoldersActivity"
-            android:label="@string/manageFolders" />
-        <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
@@ -49,6 +42,24 @@
         <activity
             android:name=".NoteActivity"
             android:label="@string/title_activity_note"
+            android:parentActivityName=".NavActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="irc.cpe.cozy.NavActivity" />
+        </activity>
+        <activity
+            android:name=".NewCheckListActivity"
+            android:label="@string/title_activity_new_check_list1"
+            android:parentActivityName=".NavActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="irc.cpe.cozy.NavActivity" />
+        </activity>
+        <activity
+            android:name=".ManageFoldersActivity"
+            android:label="@string/title_activity_manage_folders1"
             android:parentActivityName=".NavActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

@@ -18,7 +18,7 @@ public class TaskNoteContract {
     private static final String SQL_CREATE_TABLE_TASKNOTE =
             "CREATE TABLE " + TaskNoteDB.TABLE_NAME + " (" +
                     TaskNoteDB.COLUMN_ID + " INTEGER PRIMARY KEY," +
-                    TaskNoteDB.COLUMN_NAME + " TEXT NOT NULL, " +
+                    TaskNoteDB.COLUMN_NAME + " TEXT, " +
                     TaskNoteDB.COLUMN_FOLDER + " INTEGER " +
                     " )";
 
