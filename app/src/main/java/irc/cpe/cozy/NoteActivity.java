@@ -52,12 +52,19 @@ public class NoteActivity extends AppCompatActivity{
             public void onClick(View arg0) {
                 EditText newTextTitle=(EditText)findViewById(R.id.noteTitle);
                 EditText newTextContent=(EditText)findViewById(R.id.noteContent);
-                String newTitle = newTextTitle.getText().toString();
-                String newContent = newTextContent.getText().toString();
-                if(finalIdNote >0){
-                    //Modification de la note existante
-                    NoteDao noteDao = new NoteDao();
-                    Note editNote = new Note(finalIdNote, newTitle, newContent, finalIdFolder);
+                if (TextUtils.isEmpty(newTextTitle.getText().toString()))
+                {
+                    newTextTitle.setError(getString(R.string.error_field_required));
+                    newTextTitle.requestFocus();
+                }
+                else
+                {
+                    String newTitle = newTextTitle.getText().toString();
+                    String newContent = newTextContent.getText().toString();
+                    if(finalIdNote >0){
+                        //Modification de la note existante
+                        NoteDao noteDao = new NoteDao();
+                        Note editNote = new Note(finalIdNote, newTitle, newContent, finalIdFolder);
 
                     // Sync Cozy
                     SharedPreferences settings = getSharedPreferences("UserInfo", 0);
@@ -77,11 +84,11 @@ public class NoteActivity extends AppCompatActivity{
                     Toast.makeText(getApplicationContext(), "Note '"+ newTitle + "' saved",
                             Toast.LENGTH_SHORT).show();
 
-                    Intent returnIntent = new Intent();
-                    setResult(NoteActivity.RESULT_OK, returnIntent);
-                    finish();
-                }else{
-                    Note newNote = new Note(newTitle, newContent, finalIdFolder);
+                        Intent returnIntent = new Intent();
+                        setResult(NoteActivity.RESULT_OK, returnIntent);
+                        finish();
+                    }else{
+                        Note newNote = new Note(newTitle, newContent, finalIdFolder);
 
                     // Sync Cozy
                     SharedPreferences settings = getSharedPreferences("UserInfo", 0);
