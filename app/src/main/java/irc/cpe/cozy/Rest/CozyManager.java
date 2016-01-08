@@ -15,48 +15,23 @@ public class CozyManager {
         this.context = context;
     }
 
+    /**
+     * Get an instance of a CozyManager
+     *
+     * @param context application context
+     * @return instance of a CozyManager
+     */
     public static CozyManager getInstance(Context context) {
         if (manager == null)
             manager = new CozyManager(context);
         return manager;
     }
 
-    public void callCozy(WebserviceListener lt) {
-        if (isConnectedToInternet()) {
-            CozyClient cozyClient = new CozyClient(context);
-            boolean success = cozyClient.addDevice();
-            if (success) {
-                System.out.println("[DEBUG] Device added successfully");
-
-                String data = null;
-                String documentId = cozyClient.createDocument("{\"text\": \"This is my document!\"}");
-
-                String document = cozyClient.getDocument(documentId);
-                lt.notesChanged(document);
-
-                boolean update = cozyClient.updateDocument(documentId, "{\"text\": \"This is my updated document!\"}");
-                if (update) {
-                    System.out.println("[DEBUG] Document updated successfully");
-                } else {
-                    System.out.println("[DEBUG] Document NOT updated successfully");
-                }
-
-                document = cozyClient.getDocument(documentId);
-                lt.notesChanged(document);
-
-                boolean deletion = cozyClient.deleteDocument(documentId);
-                if (deletion) {
-                    System.out.println("[DEBUG] Document deleted successfully");
-                } else {
-                    System.out.println("[DEBUG] Document NOT deleted successfully");
-                }
-
-                cozyClient.removeDevice();
-                System.out.println("[DEBUG] Device removed successfully");
-            }
-        }
-    }
-
+    /**
+     * Check if the app is connected to the Internet
+     *
+     * @return true if connected
+     */
     public boolean isConnectedToInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
