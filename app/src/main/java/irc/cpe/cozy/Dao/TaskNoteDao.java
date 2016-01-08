@@ -53,13 +53,19 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
         taskNotes.moveToFirst();
         TaskNote taskNote = new TaskNote();
         taskNote.setId(Integer.parseInt(taskNotes.getString(taskNotes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_ID))));
-        taskNote.setName(taskNotes.getString(taskNotes.getColumnIndex(TaskNoteContract.TaskNoteDB.TABLE_NAME)));
+        taskNote.setName(taskNotes.getString(taskNotes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_NAME)));
         taskNote.setFolder(Integer.parseInt(taskNotes.getString(taskNotes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_FOLDER))));
 
         taskNotes.close();
 
         TaskDao taskDao = new TaskDao();
-        List<Task> tasks = taskDao.select(context, new String[]{NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE}, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE + "=?", new String[]{String.valueOf(taskNote.getId())}, null, null, null, null);
+        String[] columnsTask = {
+                NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID,
+                NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_CONTENT,
+                NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_STATUS,
+                NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE
+        };
+        List<Task> tasks = taskDao.select(context, columnsTask, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE + "=?", new String[]{String.valueOf(taskNote.getId())}, null, null, null, null);
 
         taskNote.setTasks(tasks);
         return taskNote;
@@ -73,6 +79,13 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
         CozyNoteHelper.getInstance(context).getReadableDatabase().insert(TaskNoteContract.TaskNoteDB.TABLE_NAME, null, values);
     }
 
+    public int insertForId(Context context, TaskNote taskNote){
+        ContentValues values = new ContentValues();
+        values.put(TaskNoteContract.TaskNoteDB.COLUMN_NAME, taskNote.getName());
+        values.put(TaskNoteContract.TaskNoteDB.COLUMN_FOLDER, taskNote.getFolder());
+        return (int) CozyNoteHelper.getInstance(context).getReadableDatabase().insert(TaskNoteContract.TaskNoteDB.TABLE_NAME, null, values);
+    }
+
     @Override
     public void update(Context context, TaskNote object) {
         ContentValues values = new ContentValues();
@@ -81,8 +94,12 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
         CozyNoteHelper.getInstance(context).getReadableDatabase().update(TaskNoteContract.TaskNoteDB.TABLE_NAME, values, TaskNoteContract.TaskNoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(object.getId())});
     }
 
+
+
     @Override
     public void delete(Context context, int id) {
+        TaskDao taskDao = new TaskDao();
+        taskDao.deleteByNoteId(context, id);
         CozyNoteHelper.getInstance(context).getReadableDatabase().delete(TaskNoteContract.TaskNoteDB.TABLE_NAME, TaskNoteContract.TaskNoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(id)});
     }
 
@@ -104,4 +121,41 @@ public class TaskNoteDao implements CommonDao<TaskNote>{
         checkList.close();
         return explorers;
     }
+
+    public TaskNote selectMaxId(Context context)
+    {
+        Cursor notes = CozyNoteHelper.getInstance(context).getReadableDatabase().query(TaskNoteContract.TaskNoteDB.TABLE_NAME, new String[]{"Max(" + TaskNoteContract.TaskNoteDB.COLUMN_ID + ")"}, null, null, null, null, null, null);
+        notes.moveToFirst();
+        TaskNote task = new TaskNote();
+        task.setId(notes.getInt(notes.getColumnIndex("Max(" + TaskNoteContract.TaskNoteDB.COLUMN_ID + ")")));
+        notes.close();
+        return task;
+    }
+
+    public void deleteByFolder(Context context, int folderId)
+    {
+        TaskDao taskDao = new TaskDao();
+        for (int id : selectByFolderId(context, folderId))
+        {
+            taskDao.deleteByNoteId(context, id);
+            delete(context, id);
+        }
+    }
+
+    public List<Integer> selectByFolderId(Context context, int folderId) {
+        String[] columns = {
+                TaskNoteContract.TaskNoteDB.COLUMN_ID
+        };
+        Cursor notes = CozyNoteHelper.getInstance(context).getReadableDatabase().query(TaskNoteContract.TaskNoteDB.TABLE_NAME, columns, TaskNoteContract.TaskNoteDB.COLUMN_FOLDER + "=?", new String[]{String.valueOf(folderId)}, null, null, null, null);
+        List<Integer> list = new ArrayList<>();
+        notes.moveToFirst();
+        while (!notes.isAfterLast())
+        {
+            list.add(Integer.parseInt(notes.getString(notes.getColumnIndex(TaskNoteContract.TaskNoteDB.COLUMN_ID))));
+            notes.moveToNext();
+        }
+        notes.close();
+        return list;
+    }
+
 }

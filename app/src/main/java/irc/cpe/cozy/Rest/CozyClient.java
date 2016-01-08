@@ -95,9 +95,12 @@ public class CozyClient {
                     password);
             System.out.println("[DEBUG] Cozy API response");
             if (response.code() == 201) {
+                System.out.println("[DEBUG] Document created");
                 String body = response.body().string();
                 JSONObject jsonObject = new JSONObject(body);
                 result = jsonObject.getString("_id");
+            } else {
+                System.out.println("[DEBUG] " + response.body().string());
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
@@ -142,6 +145,8 @@ public class CozyClient {
             System.out.println("[DEBUG] Cozy API response");
             if (response.code() == 204) {
                 result = true;
+            } else {
+                System.out.println("[DEBUG] " + response.body().string());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -158,6 +163,7 @@ public class CozyClient {
         String username = settings.getString("android_device_id", null);
         try {
             // TODO : replace URL (using app settings)
+            // TODO : use other API function in case of no ID (error during creation)
             Response response = client.put("https://gustiaux.cozycloud.cc/ds-api/data/" + documentId + "/",
                     document,
                     username,

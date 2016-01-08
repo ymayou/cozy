@@ -24,7 +24,7 @@ public class TaskDao implements CommonDao<Task> {
         {
             list.add(new Task(Integer.parseInt(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID))),
                     tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_CONTENT)),
-                    (Integer.parseInt(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_STATUS))) == 1),
+                    Boolean.valueOf(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_STATUS))),
                     Integer.parseInt(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE)))));
             tasks.moveToNext();
         }
@@ -61,11 +61,36 @@ public class TaskDao implements CommonDao<Task> {
 
     @Override
     public void update(Context context, Task object) {
-
+        ContentValues values = new ContentValues();
+        values.put(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_CONTENT, object.getContent());
+        values.put(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_STATUS, object.isStatus());
+        values.put(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE, object.getTaskNote());
+        CozyNoteHelper.getInstance(context).getReadableDatabase().update(NoteTaskNoteContract.NoteTaskNoteDB.TABLE_NAME, values, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(object.getId())});
     }
 
     @Override
     public void delete(Context context, int id) {
-
+        CozyNoteHelper.getInstance(context).getReadableDatabase().delete(NoteTaskNoteContract.NoteTaskNoteDB.TABLE_NAME, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID + "=?", new String[]{String.valueOf(id)});
     }
+
+    public void deleteByNoteId(Context context, int noteId) {
+        CozyNoteHelper.getInstance(context).getReadableDatabase().delete(NoteTaskNoteContract.NoteTaskNoteDB.TABLE_NAME, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE + "=?", new String[]{String.valueOf(noteId)});
+    }
+
+    /*public Task selectByNoteId(Context context, int noteId) {
+        String[] columns = {
+                NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID,
+                NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_CONTENT,
+                NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_STATUS,
+                NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE
+        };
+
+        Cursor tasks  = CozyNoteHelper.getInstance(context).getReadableDatabase().query(NoteTaskNoteContract.NoteTaskNoteDB.TABLE_NAME, columns, NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE + "=?", new String[]{String.valueOf(noteId)}, null, null, null, null);
+        tasks.moveToFirst();
+        Task task = new Task(Integer.parseInt(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_ID))),
+                tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_CONTENT)),
+                (Integer.parseInt(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_STATUS))) == 1),
+                Integer.parseInt(tasks.getString(tasks.getColumnIndex(NoteTaskNoteContract.NoteTaskNoteDB.COLUMN_TASKNOTE))));
+        return task;
+    }*/
 }

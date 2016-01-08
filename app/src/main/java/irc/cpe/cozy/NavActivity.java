@@ -1,7 +1,10 @@
 package irc.cpe.cozy;
 
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,12 +12,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +33,17 @@ import irc.cpe.cozy.Dao.NoteDao;
 import irc.cpe.cozy.Dao.TaskNoteDao;
 import irc.cpe.cozy.Model.Explorer;
 import irc.cpe.cozy.Model.Folder;
+import irc.cpe.cozy.Model.Note;
+import irc.cpe.cozy.Model.TaskNote;
+import irc.cpe.cozy.Rest.LocalService;
+import irc.cpe.cozy.Rest.ServiceManager;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     //Activity results
-    static final int NOTE_EDITED = 1;
+    public static final int NOTE_EDITED = 1;
+    public static final int CHECKLIST_EDITED = 10;
     public static final int LOGIN_RESULT_ACT = 700;
     public static final int LOGIN_RESULT_OK = 701;
 
@@ -45,9 +55,20 @@ public class NavActivity extends AppCompatActivity
     private ExplorerAdapter adapter;
     private MenuItem selectedItem;
 
+    private LocalService syncService;
+
+    private int currentFolder = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        if (settings.getBoolean("cozy_automatic_sync", false)) {
+            // Launch Cozy sync service
+            syncService = ServiceManager.getService(getApplicationContext());
+        }
+
         setContentView(R.layout.activity_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,7 +89,8 @@ public class NavActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent list = new Intent(v.getContext(), NewCheckListActivity.class);
-                startActivity(list);
+                list.putExtra("FOLDER", (selectedItem != null) ? selectedItem.getItemId() : 0);
+                startActivityForResult(list, CHECKLIST_EDITED);
             }
         });
 
@@ -92,18 +114,30 @@ public class NavActivity extends AppCompatActivity
         final GridView grid = (GridView) findViewById(R.id.noteGrid);
         grid.setAdapter(adapter);
 
-        reloadExplorer(0);
+        registerForContextMenu(grid);
+
+        reloadExplorer(currentFolder);
 
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editNote = new Intent(view.getContext(), NoteActivity.class);
-                editNote.putExtra("NOTE", ((Explorer) grid.getItemAtPosition(position)).getId());
-                startActivityForResult(editNote, NOTE_EDITED);
+                Explorer elem = (Explorer) grid.getItemAtPosition(position);
+                if (elem.getType() == Note.class)
+                {
+                    Intent editNote = new Intent(view.getContext(), NoteActivity.class);
+                    editNote.putExtra("NOTE", elem.getId());
+                    startActivityForResult(editNote, NOTE_EDITED);
+                }
+                else if (elem.getType() == TaskNote.class)
+                {
+                    Intent editTaskNote = new Intent(view.getContext(), NewCheckListActivity.class);
+                    editTaskNote.putExtra("CHECKLIST", elem.getId());
+                    startActivityForResult(editTaskNote, NOTE_EDITED);
+                }
             }
         });
 
-        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        /*grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int position, long arg3) {
@@ -128,7 +162,7 @@ public class NavActivity extends AppCompatActivity
                         .show();*/
                 return true;
             }
-        });
+        });*/
 
     }
 
@@ -205,7 +239,7 @@ public class NavActivity extends AppCompatActivity
         switch (requestCode){
             case NOTE_EDITED:
                 if(resultCode == NoteActivity.RESULT_OK){
-                    reloadExplorer(0);
+                    reloadExplorer(currentFolder);
                 }
                 if (resultCode == NoteActivity.RESULT_CANCELED) {
                     //In case of cancellation
@@ -216,6 +250,10 @@ public class NavActivity extends AppCompatActivity
                     selectedItem.setVisible(false);
                     reloadExplorer(0);
                 }
+                break;
+            case CHECKLIST_EDITED:
+                if (resultCode == NewCheckListActivity.RESULT_OK)
+                    reloadExplorer(currentFolder);
                 break;
         }
     }//onActivityResult
@@ -244,7 +282,7 @@ public class NavActivity extends AppCompatActivity
 
     private void updateMenu()
     {
-        MenuItem itemFolder = menu.findItem(0);
+        final MenuItem itemFolder = menu.findItem(0);
         if(itemFolder != null)
             menu.removeItem(0);
 
@@ -279,6 +317,7 @@ public class NavActivity extends AppCompatActivity
                     item.setChecked(true);
                     selectedItem = item;
                     reloadExplorer(item.getItemId());
+                    currentFolder = item.getItemId();
                     return onNavigationItemSelected(item);
                 }
             });
@@ -295,7 +334,42 @@ public class NavActivity extends AppCompatActivity
         });
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menuLocal, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.noteGrid) {
+            menuLocal.add(Menu.NONE, 0, 0, "Delete");
+        }
+    }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        Explorer toDelete = explorers.get(info.position);
+        if (toDelete.getType().equals(Note.class))
+        {
+            Note noteToDelete = noteDao.selectById(getApplicationContext(), toDelete.getId());
+            noteDao.delete(getApplicationContext(), toDelete.getId());
 
+            // Sync Cozy
+            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+            if (settings.getBoolean("cozy_automatic_sync", false)) {
+                boolean result = ServiceManager.getService(getApplicationContext()).deleteDocument(getApplicationContext(), noteToDelete.getIdCozy());
+                if (result == false) {
+                    Toast.makeText(getApplicationContext(), "Erreur de synchronisation avec Cozy",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Note supprimée de Cozy",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+        else if (toDelete.getType().equals(TaskNote.class))
+        {
+            taskNoteDao.delete(getApplicationContext(), toDelete.getId());
+        }
+        reloadExplorer(currentFolder);
+        return true;
+    }
 
 }

@@ -7,6 +7,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_new_mark">NoteActivity</string>
+    <string name="title_activity_edit_note">EditNoteActivity</string>
     <string name="addButton">Add</string>
     <string name="manageFolders">Manage folders</string>
     <string name="title_activity_login">Sign in</string>
@@ -28,4 +30,14 @@
     <string name="lblWarning">Warning</string>
     <string name="title_activity_settings">Settings</string>
     <string name="lblDisclaimer">The Cozy Cloud synchronization may happen without Wifi connection.\nIt will use your internet data!</string>
+    <string name="title_activity_new_check_list1">NewCheckListActivity1</string>
+    <string name="error_field_required_other">You must put a title name be able to add tasks</string>
+    <string name="title_activity_manage_folders1">Manage Folders</string>
+
+    <!-- Strings related to Cozy sync -->
+    <string name="local_service_started">Local Cozy Notes sync service has started</string>
+    <string name="local_service_stopped">Local Cozy Notes sync service has stopped</string>
+    <string name="local_service_label">Cozy Notes Sync Service</string>
+    <string name="local_service_connected">Cozy Notes Sync Service is connected</string>
+    <string name="local_service_disconnected">Cozy Notes Sync Service is disconnected</string>
 </resources>

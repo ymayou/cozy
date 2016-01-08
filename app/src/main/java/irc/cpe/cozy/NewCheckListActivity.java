@@ -1,132 +1,175 @@
 package irc.cpe.cozy;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import irc.cpe.cozy.Adapter.ChecklistAdapter;
-import irc.cpe.cozy.Model.ListElement;
+import irc.cpe.cozy.Dao.TaskDao;
+import irc.cpe.cozy.Dao.TaskNoteDao;
+import irc.cpe.cozy.Model.Task;
+import irc.cpe.cozy.Model.TaskNote;
 
-/**
- * Created by Angèle on 18/12/2015.
- */
 public class NewCheckListActivity extends AppCompatActivity {
-    ChecklistAdapter dataAdapter = null;
-    ArrayList<ListElement> liste = new ArrayList<ListElement>();
+
+    private ChecklistAdapter dataAdapter = null;
+    private TaskNoteDao taskNoteDao;
+    private TaskDao taskDao;
+    private List<Task> tasks;
+    private TaskNote taskNote;
+    private int idFolder;
+    private boolean nameChanged = false;
+    public static List<Task> taskUpdated = new ArrayList<>();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        final Context c = this;
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.task_checklist);
+        setContentView(R.layout.activity_new_check_list);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        EditText textElement = (EditText) findViewById(R.id.textElement);
-        CheckBox ck = (CheckBox) findViewById(R.id.checkBox1);
+        // tasks =  new ArrayList<>();
+        taskNoteDao = new TaskNoteDao();
+        taskDao = new TaskDao();
 
-        //Array list of some elements for Database
-        ListElement element = null;
-        element = new ListElement("", false);
-        liste.add(element);
+        EditText title = (EditText) findViewById(R.id.listeTitle);
 
-        //create an ArrayAdaptar from the String Array
-        dataAdapter = new ChecklistAdapter(this,
-                R.layout.list_layout, liste);
-        ListView listView = (ListView) findViewById(R.id.listView_checklist);
-        // Assign adapter to ListView
-        listView.setAdapter(dataAdapter);
+        int idList = getIntent().getIntExtra("CHECKLIST", 0);
+        idFolder = getIntent().getIntExtra("FOLDER", 0);
+        tasks = new ArrayList<>();
+        if (idList > 0) // edition
+        {
+            taskNote = taskNoteDao.selectById(this.getApplicationContext(), idList);
+            tasks = taskNote.getTasks();
+            title.setText(taskNote.getName());
+        }
 
-        //EditTextChange text = null; // Surveille la modification d'un élément EditText
+        title.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                nameChanged = true;
+            }
+        });
 
-       /* textElement.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                // you can call or do what you want with your EditText here
-                /*EditText textElement = (EditText) findViewById(R.id.textElement);
-                liste.get(R.id.textElement).setName(textElement.getEditableText().toString());
-                ListElement element = new ListElement(textElement.getText().toString(), false);}
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });*/
-
-        checkButtonClick();
+        ListView tasksView = (ListView) findViewById(R.id.listView_checklist);
+        dataAdapter = new ChecklistAdapter(getApplicationContext(), R.layout.list_layout, tasks);
+        tasksView.setAdapter(dataAdapter);
     }
 
-    public void onCheckboxClicked(View view) {
-        // Is the view now checked?
-        boolean checked = ((CheckBox) view).isChecked();
-        // Check which checkbox was clicked
-        switch (view.getId()) {
-            case R.id.checkBox1:
-                if (checked) {
-                } else
-                    break;
+    public void addElement(View view)
+    {
+        EditText title = (EditText) findViewById(R.id.listeTitle);
+        if (TextUtils.isEmpty(title.getText().toString()))
+        {
+            title.setError(getString(R.string.error_field_required_other));
+            title.requestFocus();
+        }
+        else
+        {
+            if (taskNote == null)
+            {
+                taskNote = new TaskNote(title.getText().toString(), null, idFolder);
+                taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
+                taskNote.setTasks(tasks);
+                taskNote.setFolder(idFolder);
+            }
+            EditText element = (EditText) findViewById(R.id.newElement);
+            if (TextUtils.isEmpty(element.getText().toString()))
+            {
+                element.setError(getString(R.string.error_field_required));
+                element.requestFocus();
+            }
+            else
+            {
+                Task task = new Task(false, element.getText().toString(), taskNote.getId());
+                taskNote.getTasks().add(task);
+                taskDao.insert(this.getApplicationContext(), task);
+                element.setText("");
+                dataAdapter.notifyDataSetChanged();
+            }
         }
     }
 
-    private void checkButtonClick() {   // Gère le clic sur le bouton ajouter
-        ImageButton myButton = (ImageButton) findViewById(R.id.addChecklist);
-        myButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                boolean ok = true;
 
-            @Override
-            public void onClick(View v) {
-
-                EditText ed = (EditText) findViewById(R.id.textElement);
-                if(ed.getText().toString().isEmpty()) {}
-                else {
-                    ListElement element = new ListElement(findViewById(R.id.newElement).toString() , false);
-                    liste.add(element);     // Ajoute le nouvel élément à la liste
-
-                    ed.setText(""); // Vide le nouvel élément
-                    dataAdapter.clear();
-                    dataAdapter.addAll(liste);  // Met à jour la liste
-                }
-
-                StringBuffer responseText = new StringBuffer();
-
-                ArrayList<ListElement> listElements = dataAdapter.liste;
-                for(int i=0;i<listElements.size();i++){
-                    ListElement liste = listElements.get(i);
-                    if(liste.isSelected()){
-                        responseText.append("\n" + liste.getName() + "is added");
+                if (nameChanged)
+                {
+                    EditText name = (EditText) findViewById(R.id.listeTitle);
+                    if (TextUtils.isEmpty(name.getText().toString()))
+                    {
+                        if (taskNote == null) {
+                            // cancel
+                            return super.onOptionsItemSelected(item);
+                        }
+                        name.setError(getString(R.string.error_field_required));
+                        name.requestFocus();
+                        ok = false;
+                    }
+                    else
+                    {
+                        if (taskNote == null) {
+                                taskNote = new TaskNote(name.getText().toString(), null, idFolder);
+                                taskNote.setId(taskNoteDao.insertForId(this.getApplicationContext(), taskNote));
+                        }
+                        else if (!name.getText().toString().equals(taskNote.getName()))
+                        {
+                            taskNote.setName(name.getText().toString());
+                            taskNoteDao.update(getApplicationContext(), taskNote);
+                        }
                     }
                 }
 
-                Toast.makeText(getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-   /* public class EditTextChange extends AppCompatActivity {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.list_layout);
-
-            EditText text = (EditText) findViewById(R.id.textElement);
-            text.addTextChangedListener(new TextWatcher() {
-
-                public void afterTextChanged(Editable s) {
-                    EditText textElement = (EditText) findViewById(R.id.textElement);
-                    liste.get(R.id.textElement).setName(textElement.getEditableText().toString());
-                    ListElement element = new ListElement(textElement.getText().toString(), false);
+                if (taskUpdated.size() > 0)
+                {
+                    EditText name = (EditText) findViewById(R.id.listeTitle);
+                    name.requestFocus();
+                    for (Task t : taskUpdated)
+                        taskDao.update(getApplicationContext(), t);
                 }
 
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {}
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {}
-            });
-
+                if (ok) {
+                    Intent returnIntent = new Intent();
+                    setResult(NewCheckListActivity.RESULT_OK, returnIntent);
+                    //return super.onOptionsItemSelected(item);
+                    finish();
+                }
+                break;
         }
-    }*/
+        return true;
+    }
+
+    public void onCheckboxClicked(View view) {
+        boolean checked = ((CheckBox) view).isChecked();
+
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.checkBox1:
+                if (checked){
+                    Task task = this.taskNote.getTasks().get(R.id.textElement);
+                    task.setStatus(true);
+                    dataAdapter.notifyDataSetChanged();
+                }
+                else{
+                    Task task = this.taskNote.getTasks().get(R.id.textElement);
+                    task.setStatus(false);
+                    dataAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
+    }
 }

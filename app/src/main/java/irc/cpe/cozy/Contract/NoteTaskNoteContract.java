@@ -19,7 +19,7 @@ public class NoteTaskNoteContract {
     private static final String SQL_CREATE_TABLE_NOTETASKNOTE =
             "CREATE TABLE " + NoteTaskNoteDB.TABLE_NAME + " (" +
                     NoteTaskNoteDB.COLUMN_ID + " INTEGER PRIMARY KEY," +
-                    NoteTaskNoteDB.COLUMN_CONTENT + " INTEGER NOT NULL, " +
+                    NoteTaskNoteDB.COLUMN_CONTENT + " TEXT, " +
                     NoteTaskNoteDB.COLUMN_STATUS + " INTEGER DEFAULT 0, " +
                     NoteTaskNoteDB.COLUMN_TASKNOTE + " INTEGER NOT NULL " +
                     " )";

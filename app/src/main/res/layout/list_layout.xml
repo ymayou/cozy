@@ -16,7 +16,6 @@
         android:id="@+id/textElement"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/checkBox1"
         android:layout_centerHorizontal="@+id/checkBox1"
         android:layout_toRightOf="@+id/checkBox1" />
 

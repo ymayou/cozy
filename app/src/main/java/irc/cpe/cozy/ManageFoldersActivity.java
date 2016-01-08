@@ -2,22 +2,25 @@ package irc.cpe.cozy;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
 import irc.cpe.cozy.Adapter.FolderAdapter;
 import irc.cpe.cozy.Contract.FolderContract;
 import irc.cpe.cozy.Dao.FolderDao;
+import irc.cpe.cozy.Dao.NoteDao;
+import irc.cpe.cozy.Dao.TaskNoteDao;
 import irc.cpe.cozy.Model.Folder;
 
 public class ManageFoldersActivity extends AppCompatActivity {
-
     private FolderAdapter adapter;
     ListView foldersView;
     private FolderDao dao = new FolderDao();
@@ -26,6 +29,9 @@ public class ManageFoldersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_folders);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String[] columns = {
                 FolderContract.FolderDB.COLUMN_ID,
@@ -59,9 +65,26 @@ public class ManageFoldersActivity extends AppCompatActivity {
 
     public void deleteFolder(View view)
     {
-        Folder folder = (Folder)foldersView.getAdapter().getItem(foldersView.getPositionForView((View)view.getParent()));
-        dao.delete(view.getContext(), folder.getId());
-        reloadData();
+        final Folder folder = (Folder)foldersView.getAdapter().getItem(foldersView.getPositionForView((View)view.getParent()));
+
+        final AlertDialog.Builder delAll = new AlertDialog.Builder(this);
+        delAll.setTitle("Delete everything?");
+        delAll.setCancelable(true);
+        final TextView info = new TextView(this);
+        info.setText("This action will every document in this folder.");
+        delAll.setView(info);
+        delAll.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                TaskNoteDao taskNoteDao = new TaskNoteDao();
+                taskNoteDao.deleteByFolder(getApplicationContext(), folder.getId());
+                NoteDao noteDao = new NoteDao();
+                noteDao.deleteByFolder(getApplicationContext(), folder.getId());
+                dao.delete(getApplicationContext(), folder.getId());
+                reloadData();
+            }
+        });
+        delAll.show();
     }
 
     public void addFolder(View view)
